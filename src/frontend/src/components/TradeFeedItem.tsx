@@ -97,7 +97,7 @@ export function TradeFeedItem({ trade, index, userName }: TradeFeedItemProps) {
 
       {/* User */}
       <span className="hidden sm:block text-[9px] font-mono text-muted-foreground/50 truncate max-w-[72px] tabular-nums">
-        {userName ?? truncatePrincipal(trade.user, 5)}
+        {trade.user_username || userName || truncatePrincipal(trade.user, 5)}
       </span>
 
       {/* Time */}

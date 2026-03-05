@@ -605,7 +605,8 @@ export function TokenDetail() {
                         {formatPrice(trade.price)}
                       </TableCell>
                       <TableCell className="font-mono text-xs hidden sm:table-cell text-muted-foreground">
-                        {tradeUserNames.get(trade.user) ??
+                        {trade.user_username ||
+                          tradeUserNames.get(trade.user) ||
                           truncatePrincipal(trade.user, 6)}
                       </TableCell>
                       <TableCell className="font-mono text-xs text-right text-muted-foreground">

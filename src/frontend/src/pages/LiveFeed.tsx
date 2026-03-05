@@ -346,7 +346,8 @@ export function LiveFeed() {
 
                     {/* User */}
                     <div className="hidden md:block text-[10px] font-mono text-muted-foreground w-20 truncate">
-                      {userNames.get(trade.user) ??
+                      {trade.user_username ||
+                        userNames.get(trade.user) ||
                         `${(trade.user ?? "").slice(0, 6)}...`}
                     </div>
 

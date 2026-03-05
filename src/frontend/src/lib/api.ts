@@ -54,17 +54,55 @@ export interface TokensResponse {
   page: number;
 }
 
+// Raw trade shape from Odin.fun API
+interface RawTrade {
+  id: string;
+  token: string;
+  user: string;
+  time: string;
+  buy: boolean;
+  amount_btc: number;
+  amount_token: number;
+  price: number;
+  bonded?: boolean;
+  user_username?: string;
+  user_image?: string;
+  // token detail fields may be present in some endpoints
+  token_name?: string;
+  token_ticker?: string;
+}
+
+// Normalized trade shape used across the app
 export interface Trade {
   id: string;
   token_id: string;
   token_name?: string;
   token_ticker?: string;
   user: string;
+  user_username?: string;
+  user_image?: string;
   type: "buy" | "sell";
   btc_amount: number;
   token_amount: number;
   price: number;
   time: string;
+}
+
+function normalizeTrade(r: RawTrade): Trade {
+  return {
+    id: r.id,
+    token_id: r.token,
+    token_name: r.token_name,
+    token_ticker: r.token_ticker,
+    user: r.user,
+    user_username: r.user_username,
+    user_image: r.user_image,
+    type: r.buy ? "buy" : "sell",
+    btc_amount: r.amount_btc,
+    token_amount: r.amount_token,
+    price: r.price,
+    time: r.time,
+  };
 }
 
 export interface TradesResponse {
@@ -198,10 +236,11 @@ export async function getTokenTrades(
   id: string,
   params?: { limit?: number; page?: number },
 ): Promise<TradesResponse> {
-  return apiFetch<TradesResponse>(
+  const raw = await apiFetch<{ data: RawTrade[]; count: number }>(
     `/token/${id}/trades`,
     params as Record<string, string | number | boolean>,
   );
+  return { data: (raw.data || []).map(normalizeTrade), count: raw.count };
 }
 
 export async function getTokenOwners(
@@ -229,10 +268,11 @@ export async function getRecentTrades(params?: {
   sort?: string;
   min_btc?: number;
 }): Promise<TradesResponse> {
-  return apiFetch<TradesResponse>(
+  const raw = await apiFetch<{ data: RawTrade[]; count: number }>(
     "/trades",
     params as Record<string, string | number | boolean>,
   );
+  return { data: (raw.data || []).map(normalizeTrade), count: raw.count };
 }
 
 export async function getUser(id: string): Promise<UserProfile> {
