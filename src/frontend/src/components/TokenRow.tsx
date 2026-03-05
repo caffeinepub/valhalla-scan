@@ -4,6 +4,7 @@ import type { Token } from "@/lib/api";
 import { getTokenImageUrl } from "@/lib/api";
 import {
   formatMarketCap,
+  formatMarketCapUSD,
   formatNumber,
   formatPct,
   formatPrice,
@@ -16,9 +17,15 @@ interface TokenRowProps {
   token: Token;
   rank?: number;
   index: number;
+  btcPrice?: number | null;
 }
 
-export function TokenRow({ token, rank, index }: TokenRowProps) {
+export function TokenRow({
+  token,
+  rank,
+  index,
+  btcPrice = null,
+}: TokenRowProps) {
   return (
     <Link
       to="/token/$id"
@@ -71,9 +78,15 @@ export function TokenRow({ token, rank, index }: TokenRowProps) {
           <div className="text-[12px] font-mono text-foreground/90 tabular-nums">
             {formatMarketCap(token.marketcap)}
           </div>
-          <div className="text-[9px] font-mono text-muted-foreground/60 tracking-wider uppercase">
-            MCAP
-          </div>
+          {btcPrice && token.marketcap ? (
+            <div className="text-[9px] font-mono text-muted-foreground/55 tabular-nums">
+              {formatMarketCapUSD(token.marketcap, btcPrice)}
+            </div>
+          ) : (
+            <div className="text-[9px] font-mono text-muted-foreground/60 tracking-wider uppercase">
+              MCAP
+            </div>
+          )}
         </div>
         <div className="w-16">
           <div

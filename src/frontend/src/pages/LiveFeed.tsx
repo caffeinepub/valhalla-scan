@@ -3,12 +3,27 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
+import { useBtcPrice } from "@/hooks/use-btc-price";
 import { useUserNames } from "@/hooks/use-user-names";
 import { type Trade, getRecentTrades, getTokenImageUrl } from "@/lib/api";
-import { formatBTC, formatNumber, timeAgo } from "@/lib/formatters";
+import {
+  formatBTC,
+  formatBTCWithUSD,
+  formatNumber,
+  formatUSD,
+  satsToUSD,
+  timeAgo,
+  truncatePrincipal,
+} from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { Activity, Filter, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  Activity,
+  Bitcoin,
+  Filter,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -17,10 +32,11 @@ const SATS_PER_BTC = 1e8;
 export function LiveFeed() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
-  const [minBTC, setMinBTC] = useState(0); // in BTC
+  const [minBTC, setMinBTC] = useState(0);
   const [newTradeIds, setNewTradeIds] = useState<Set<string>>(new Set());
   const refreshRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevIdsRef = useRef<Set<string>>(new Set());
+  const btcPrice = useBtcPrice();
 
   const fetchTrades = async (minBTCAmount = 0) => {
     try {
@@ -36,7 +52,6 @@ export function LiveFeed() {
             )
           : allTrades;
 
-      // Detect new trades for animation
       const currentIds = new Set(filtered.map((t) => t.id));
       const newIds = new Set(
         [...currentIds].filter((id) => !prevIdsRef.current.has(id)),
@@ -45,7 +60,6 @@ export function LiveFeed() {
       setNewTradeIds(newIds);
       setTrades(filtered);
 
-      // Clear new trade highlights after 2s
       if (newIds.size > 0) {
         setTimeout(() => setNewTradeIds(new Set()), 2000);
       }
@@ -56,7 +70,7 @@ export function LiveFeed() {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchTrades is defined in component, minBTC is the real dep
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchTrades defined in component, minBTC is real dep
   useEffect(() => {
     fetchTrades(minBTC);
     refreshRef.current = setInterval(() => fetchTrades(minBTC), 5000);
@@ -98,12 +112,23 @@ export function LiveFeed() {
             Real-time trade stream — refreshes every 5 seconds
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
-          </span>
-          <span className="text-xs font-mono text-neon-green">LIVE</span>
+        <div className="flex items-center gap-3">
+          {btcPrice && (
+            <div className="flex items-center gap-1.5 bg-card border border-border rounded-sm px-2.5 py-1.5">
+              <Bitcoin className="h-3 w-3 text-neon-gold" />
+              <span className="text-xs font-mono font-bold text-neon-gold tabular-nums">
+                $
+                {btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
+            </span>
+            <span className="text-xs font-mono text-neon-green">LIVE</span>
+          </div>
         </div>
       </motion.div>
 
@@ -124,6 +149,11 @@ export function LiveFeed() {
           <div className="font-mono font-bold text-neon-green text-sm">
             {formatBTC(totalBuyVol)}
           </div>
+          {btcPrice && totalBuyVol > 0 && (
+            <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">
+              {formatUSD(satsToUSD(totalBuyVol, btcPrice))}
+            </div>
+          )}
         </div>
         <div className="bg-card border border-border rounded-sm p-3">
           <div className="text-[10px] font-mono text-muted-foreground">
@@ -132,6 +162,11 @@ export function LiveFeed() {
           <div className="font-mono font-bold text-neon-red text-sm">
             {formatBTC(totalSellVol)}
           </div>
+          {btcPrice && totalSellVol > 0 && (
+            <div className="text-[9px] font-mono text-muted-foreground/60 mt-0.5">
+              {formatUSD(satsToUSD(totalSellVol, btcPrice))}
+            </div>
+          )}
         </div>
         <div className="bg-card border border-border rounded-sm p-3">
           <div className="text-[10px] font-mono text-muted-foreground mb-1.5">
@@ -178,13 +213,20 @@ export function LiveFeed() {
               className="w-full"
             />
           </div>
-          <div className="text-right min-w-[80px]">
+          <div className="text-right min-w-[110px]">
             <div className="font-mono text-sm font-bold text-neon-gold">
               ≥ {minBTC === 0 ? "ALL" : `${minBTC.toFixed(3)} BTC`}
             </div>
-            <div className="text-[10px] font-mono text-muted-foreground">
-              MIN AMOUNT
-            </div>
+            {btcPrice && minBTC > 0 && (
+              <div className="text-[10px] font-mono text-muted-foreground">
+                ≥ {formatUSD(minBTC * btcPrice)}
+              </div>
+            )}
+            {minBTC === 0 && (
+              <div className="text-[10px] font-mono text-muted-foreground">
+                MIN AMOUNT
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -199,7 +241,7 @@ export function LiveFeed() {
         {/* Table header */}
         <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-muted/20">
           <div className="w-7 flex-shrink-0" />
-          <div className="w-24 text-[10px] font-mono text-muted-foreground">
+          <div className="w-20 text-[10px] font-mono text-muted-foreground">
             TOKEN
           </div>
           <div className="w-16 text-[10px] font-mono text-muted-foreground">
@@ -207,8 +249,11 @@ export function LiveFeed() {
           </div>
           <div className="flex-1 text-[10px] font-mono text-muted-foreground">
             BTC AMOUNT
+            {btcPrice
+              ? ` / USD @ $${btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+              : ""}
           </div>
-          <div className="hidden sm:block w-24 text-[10px] font-mono text-muted-foreground">
+          <div className="hidden sm:block w-16 text-[10px] font-mono text-muted-foreground text-right">
             TOKENS
           </div>
           <div className="hidden md:block text-[10px] font-mono text-muted-foreground w-20">
@@ -250,6 +295,15 @@ export function LiveFeed() {
               {trades.map((trade, i) => {
                 const isBuy = trade.type === "buy";
                 const isNew = newTradeIds.has(trade.id);
+                const { btc: btcStr, usd: usdStr } = formatBTCWithUSD(
+                  trade.btc_amount,
+                  btcPrice,
+                );
+                const displayName =
+                  trade.user_username ||
+                  userNames.get(trade.user) ||
+                  (trade.user ? truncatePrincipal(trade.user, 5) : "—");
+
                 return (
                   <motion.div
                     key={trade.id || i}
@@ -296,7 +350,7 @@ export function LiveFeed() {
                     <Link
                       to="/token/$id"
                       params={{ id: trade.token_id }}
-                      className="w-24 text-xs font-medium text-foreground hover:text-neon-cyan transition-colors truncate"
+                      className="w-20 text-xs font-medium text-foreground hover:text-neon-cyan transition-colors truncate"
                     >
                       {trade.token_ticker ||
                         trade.token_name ||
@@ -327,28 +381,36 @@ export function LiveFeed() {
                       </Badge>
                     </div>
 
-                    {/* BTC amount */}
+                    {/* BTC + USD amount */}
                     <div className="flex-1 min-w-0">
                       <div
                         className={cn(
-                          "text-xs font-mono font-medium",
+                          "text-xs font-mono font-medium tabular-nums",
                           isBuy ? "text-neon-green" : "text-neon-red",
                         )}
                       >
-                        {formatBTC(trade.btc_amount)}
+                        {btcStr}
                       </div>
+                      {usdStr && (
+                        <div className="text-[10px] font-mono text-muted-foreground/55 tabular-nums">
+                          {usdStr}
+                        </div>
+                      )}
                     </div>
 
                     {/* Token amount */}
-                    <div className="hidden sm:block w-24 text-xs font-mono text-muted-foreground truncate">
-                      {formatNumber(trade.token_amount)}
+                    <div className="hidden sm:block w-16 text-right flex-shrink-0">
+                      <div className="text-xs font-mono text-foreground/70 tabular-nums">
+                        {formatNumber(trade.token_amount)}
+                      </div>
+                      <div className="text-[9px] font-mono text-muted-foreground/40 tracking-wider">
+                        TKN
+                      </div>
                     </div>
 
                     {/* User */}
                     <div className="hidden md:block text-[10px] font-mono text-muted-foreground w-20 truncate">
-                      {trade.user_username ||
-                        userNames.get(trade.user) ||
-                        `${(trade.user ?? "").slice(0, 6)}...`}
+                      {displayName}
                     </div>
 
                     {/* Time */}

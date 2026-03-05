@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBtcPrice } from "@/hooks/use-btc-price";
 import { useUserNames } from "@/hooks/use-user-names";
 import {
   type Comment,
@@ -35,12 +36,16 @@ import {
 } from "@/lib/api";
 import {
   formatBTC,
+  formatBTCWithUSD,
   formatDate,
   formatMarketCap,
+  formatMarketCapUSD,
   formatNumber,
   formatPct,
   formatPrice,
+  formatUSD,
   pctColor,
+  satsToUSD,
   timeAgo,
   truncatePrincipal,
 } from "@/lib/formatters";
@@ -49,6 +54,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
   BarChart3,
+  Bitcoin,
   ChevronLeft,
   Globe,
   MessageSquare,
@@ -239,6 +245,7 @@ function PriceChart({ tokenId }: { tokenId: string }) {
 
 export function TokenDetail() {
   const { id } = useParams({ from: "/token/$id" });
+  const btcPrice = useBtcPrice();
   const [token, setToken] = useState<Token | null>(null);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [holders, setHolders] = useState<TokenHolder[]>([]);
@@ -396,6 +403,11 @@ export function TokenDetail() {
             <div className="font-mono text-2xl font-bold text-foreground">
               {formatPrice(token.price)} BTC
             </div>
+            {btcPrice && token.price && (
+              <div className="font-mono text-sm text-muted-foreground mt-0.5">
+                ≈ {formatUSD(satsToUSD(token.price, btcPrice))}
+              </div>
+            )}
             <div
               className={cn(
                 "flex items-center gap-1 mt-0.5 font-mono text-sm font-medium",
@@ -455,6 +467,11 @@ export function TokenDetail() {
             <div className="font-mono text-sm font-medium text-foreground mt-0.5">
               {formatMarketCap(token.marketcap)}
             </div>
+            {btcPrice && token.marketcap && (
+              <div className="text-[10px] font-mono text-muted-foreground/60 mt-0.5">
+                {formatMarketCapUSD(token.marketcap, btcPrice)}
+              </div>
+            )}
           </div>
           <div>
             <div className="text-xs font-mono text-muted-foreground">
@@ -463,6 +480,11 @@ export function TokenDetail() {
             <div className="font-mono text-sm font-medium text-foreground mt-0.5">
               {formatMarketCap(token.volume)}
             </div>
+            {btcPrice && token.volume && (
+              <div className="text-[10px] font-mono text-muted-foreground/60 mt-0.5">
+                {formatMarketCapUSD(token.volume, btcPrice)}
+              </div>
+            )}
           </div>
           <div>
             <div className="text-xs font-mono text-muted-foreground">
@@ -596,7 +618,12 @@ export function TokenDetail() {
                         </Badge>
                       </TableCell>
                       <TableCell className="font-mono text-xs text-foreground">
-                        {formatBTC(trade.btc_amount)}
+                        <div>{formatBTC(trade.btc_amount)}</div>
+                        {btcPrice && trade.btc_amount ? (
+                          <div className="text-[10px] text-muted-foreground/55">
+                            {formatBTCWithUSD(trade.btc_amount, btcPrice).usd}
+                          </div>
+                        ) : null}
                       </TableCell>
                       <TableCell className="font-mono text-xs hidden sm:table-cell">
                         {formatNumber(trade.token_amount)}

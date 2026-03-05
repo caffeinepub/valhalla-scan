@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Trade } from "@/lib/api";
 import { getTokenImageUrl } from "@/lib/api";
 import {
-  formatBTC,
+  formatBTCWithUSD,
   formatNumber,
   timeAgo,
   truncatePrincipal,
@@ -16,10 +16,25 @@ interface TradeFeedItemProps {
   trade: Trade;
   index: number;
   userName?: string;
+  btcPrice?: number | null;
 }
 
-export function TradeFeedItem({ trade, index, userName }: TradeFeedItemProps) {
+export function TradeFeedItem({
+  trade,
+  index,
+  userName,
+  btcPrice = null,
+}: TradeFeedItemProps) {
   const isBuy = trade.type === "buy";
+  const { btc: btcStr, usd: usdStr } = formatBTCWithUSD(
+    trade.btc_amount,
+    btcPrice,
+  );
+
+  const displayName =
+    trade.user_username ||
+    userName ||
+    (trade.user ? truncatePrincipal(trade.user, 5) : "—");
 
   return (
     <div
@@ -53,14 +68,14 @@ export function TradeFeedItem({ trade, index, userName }: TradeFeedItemProps) {
       <Link
         to="/token/$id"
         params={{ id: trade.token_id }}
-        className="w-20 min-w-0 text-[12px] font-semibold text-foreground hover:text-neon-cyan transition-colors truncate leading-none"
+        className="w-16 min-w-0 text-[12px] font-semibold text-foreground hover:text-neon-cyan transition-colors truncate leading-none"
       >
         {trade.token_ticker ||
           trade.token_name ||
           (trade.token_id ?? "").slice(0, 8)}
       </Link>
 
-      {/* Buy/Sell badge — with neon glow */}
+      {/* Buy/Sell badge */}
       <Badge
         className={cn(
           "text-[9px] font-mono px-1.5 py-0 h-4.5 flex-shrink-0 rounded-[2px] tracking-wider",
@@ -80,7 +95,7 @@ export function TradeFeedItem({ trade, index, userName }: TradeFeedItemProps) {
         )}
       </Badge>
 
-      {/* Amount */}
+      {/* Amount: BTC + USD */}
       <div className="flex-1 min-w-0">
         <div
           className={cn(
@@ -88,16 +103,28 @@ export function TradeFeedItem({ trade, index, userName }: TradeFeedItemProps) {
             isBuy ? "text-neon-green" : "text-neon-red",
           )}
         >
-          {formatBTC(trade.btc_amount)}
+          {btcStr}
         </div>
-        <div className="text-[9px] text-muted-foreground/60 font-mono">
-          {formatNumber(trade.token_amount)} tkn
+        {usdStr && (
+          <div className="text-[9px] text-muted-foreground/55 font-mono tabular-nums">
+            {usdStr}
+          </div>
+        )}
+      </div>
+
+      {/* Token amount */}
+      <div className="hidden sm:block text-right flex-shrink-0 w-14">
+        <div className="text-[10px] font-mono text-foreground/70 tabular-nums">
+          {formatNumber(trade.token_amount)}
+        </div>
+        <div className="text-[8px] font-mono text-muted-foreground/40 tracking-wider">
+          TKN
         </div>
       </div>
 
       {/* User */}
-      <span className="hidden sm:block text-[9px] font-mono text-muted-foreground/50 truncate max-w-[72px] tabular-nums">
-        {trade.user_username || userName || truncatePrincipal(trade.user, 5)}
+      <span className="hidden md:block text-[9px] font-mono text-muted-foreground/50 truncate max-w-[72px] tabular-nums">
+        {displayName}
       </span>
 
       {/* Time */}

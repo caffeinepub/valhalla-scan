@@ -11,13 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBtcPrice } from "@/hooks/use-btc-price";
 import {
-  type Trade,
   type UserBalance,
   type UserProfile,
   type UserStats,
   getTokenImageUrl,
-  getTokenTrades,
   getUser,
   getUserBalances,
   getUserImageUrl,
@@ -25,16 +24,15 @@ import {
 } from "@/lib/api";
 import {
   formatBTC,
+  formatBTCWithUSD,
   formatDate,
-  formatMarketCap,
   formatNumber,
   pctColor,
-  timeAgo,
   truncatePrincipal,
 } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { Search, TrendingDown, TrendingUp, User2, Wallet } from "lucide-react";
+import { Search, User2, Wallet } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 
@@ -45,6 +43,7 @@ const SAMPLE_PRINCIPALS = [
 ];
 
 export function UserLookup() {
+  const btcPrice = useBtcPrice();
   const [searchInput, setSearchInput] = useState("");
   const [principal, setPrincipal] = useState("");
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -241,6 +240,11 @@ export function UserLookup() {
                 <div className="font-mono font-bold text-sm text-foreground mt-0.5">
                   {formatBTC(stats.volume)}
                 </div>
+                {btcPrice && stats.volume ? (
+                  <div className="text-[10px] font-mono text-muted-foreground/55 mt-0.5">
+                    {formatBTCWithUSD(stats.volume, btcPrice).usd}
+                  </div>
+                ) : null}
               </div>
               <div className="bg-card border border-border rounded-sm p-3 rune-border">
                 <div className="text-[10px] font-mono text-muted-foreground">
@@ -256,6 +260,11 @@ export function UserLookup() {
                 >
                   {formatBTC(stats.realized_pnl)}
                 </div>
+                {btcPrice && stats.realized_pnl ? (
+                  <div className="text-[10px] font-mono text-muted-foreground/55 mt-0.5">
+                    {formatBTCWithUSD(stats.realized_pnl, btcPrice).usd}
+                  </div>
+                ) : null}
               </div>
             </div>
           )}
@@ -324,7 +333,12 @@ export function UserLookup() {
                         {formatNumber(b.balance)}
                       </TableCell>
                       <TableCell className="font-mono text-xs text-right hidden sm:table-cell">
-                        {b.value ? formatBTC(b.value) : "—"}
+                        <div>{b.value ? formatBTC(b.value) : "—"}</div>
+                        {btcPrice && b.value ? (
+                          <div className="text-[10px] text-muted-foreground/55">
+                            {formatBTCWithUSD(b.value, btcPrice).usd}
+                          </div>
+                        ) : null}
                       </TableCell>
                       <TableCell
                         className={cn(
@@ -332,7 +346,14 @@ export function UserLookup() {
                           pctColor(b.unrealized_pnl),
                         )}
                       >
-                        {b.unrealized_pnl ? formatBTC(b.unrealized_pnl) : "—"}
+                        <div>
+                          {b.unrealized_pnl ? formatBTC(b.unrealized_pnl) : "—"}
+                        </div>
+                        {btcPrice && b.unrealized_pnl ? (
+                          <div className="text-[10px] text-muted-foreground/55">
+                            {formatBTCWithUSD(b.unrealized_pnl, btcPrice).usd}
+                          </div>
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   ))}

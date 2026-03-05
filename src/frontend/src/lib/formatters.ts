@@ -155,3 +155,51 @@ export function formatDate(dateStr: string | undefined | null): string {
     return "—";
   }
 }
+
+/**
+ * Format USD amount with compact notation
+ */
+export function formatUSD(usd: number | undefined | null): string {
+  if (usd === undefined || usd === null) return "";
+  if (usd < 0.01) return "<$0.01";
+  if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
+  if (usd >= 1_000) return `$${(usd / 1_000).toFixed(2)}K`;
+  if (usd >= 1) return `$${usd.toFixed(2)}`;
+  return `$${usd.toFixed(4)}`;
+}
+
+/**
+ * Convert satoshis to USD given current BTC price
+ */
+export function satsToUSD(sats: number, btcPriceUSD: number): number {
+  return (sats / 1e8) * btcPriceUSD;
+}
+
+/**
+ * Format satoshi amount as BTC with USD equivalent on separate line
+ */
+export function formatBTCWithUSD(
+  sats: number | undefined | null,
+  btcPriceUSD: number | null,
+): { btc: string; usd: string } {
+  const btcStr = formatBTC(sats);
+  if (btcStr === "—" || sats === undefined || sats === null || sats === 0)
+    return { btc: btcStr, usd: "" };
+  if (btcPriceUSD === null) return { btc: btcStr, usd: "" };
+  const usdVal = satsToUSD(sats, btcPriceUSD);
+  return { btc: btcStr, usd: formatUSD(usdVal) };
+}
+
+/**
+ * Format market cap in USD
+ */
+export function formatMarketCapUSD(
+  sats: number | undefined | null,
+  btcPriceUSD: number | null,
+): string {
+  if (sats === undefined || sats === null || btcPriceUSD === null) return "";
+  const usd = satsToUSD(sats, btcPriceUSD);
+  if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
+  if (usd >= 1_000) return `$${(usd / 1_000).toFixed(2)}K`;
+  return `$${usd.toFixed(2)}`;
+}

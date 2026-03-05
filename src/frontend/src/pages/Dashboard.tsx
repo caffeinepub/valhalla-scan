@@ -3,6 +3,7 @@ import { TokenRow } from "@/components/TokenRow";
 import { TradeFeedItem } from "@/components/TradeFeedItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBtcPrice } from "@/hooks/use-btc-price";
 import { useUserNames } from "@/hooks/use-user-names";
 import {
   type DashboardStats,
@@ -12,7 +13,7 @@ import {
   getRecentTrades,
   getTokens,
 } from "@/lib/api";
-import { formatBTC, formatNumber } from "@/lib/formatters";
+import { formatBTC, formatMarketCapUSD, formatNumber } from "@/lib/formatters";
 import {
   Activity,
   Bitcoin,
@@ -26,6 +27,7 @@ import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export function Dashboard() {
+  const btcPrice = useBtcPrice();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [gainers, setGainers] = useState<Token[]>([]);
   const [losers, setLosers] = useState<Token[]>([]);
@@ -114,12 +116,23 @@ export function Dashboard() {
             Bitcoin Token Intelligence Terminal — powered by odin.fun
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
-          </span>
-          <span className="text-xs font-mono text-neon-green">LIVE</span>
+        <div className="flex items-center gap-3">
+          {btcPrice && (
+            <div className="flex items-center gap-1.5 bg-card border border-border rounded-sm px-2.5 py-1.5">
+              <Bitcoin className="h-3 w-3 text-neon-gold" />
+              <span className="text-xs font-mono font-bold text-neon-gold tabular-nums">
+                $
+                {btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
+            </span>
+            <span className="text-xs font-mono text-neon-green">LIVE</span>
+          </div>
         </div>
       </motion.div>
 
@@ -142,7 +155,11 @@ export function Dashboard() {
         <StatCard
           label="BTC Volume"
           value={loading ? "—" : formatBTC(stats?.btc_volume)}
-          subValue="24h volume"
+          subValue={
+            !loading && btcPrice && stats?.btc_volume
+              ? formatMarketCapUSD(stats.btc_volume, btcPrice)
+              : "24h volume"
+          }
           icon={<Bitcoin className="h-4 w-4" />}
           delay={0.1}
         />
@@ -196,6 +213,7 @@ export function Dashboard() {
                       token={token}
                       rank={i + 1}
                       index={i + 1}
+                      btcPrice={btcPrice}
                     />
                   ))}
             </div>
@@ -238,6 +256,7 @@ export function Dashboard() {
                       token={token}
                       rank={i + 1}
                       index={i + 1}
+                      btcPrice={btcPrice}
                     />
                   ))}
             </div>
@@ -271,7 +290,12 @@ export function Dashboard() {
                     </div>
                   ))
                 : recentTokens.map((token, i) => (
-                    <TokenRow key={token.id} token={token} index={i + 1} />
+                    <TokenRow
+                      key={token.id}
+                      token={token}
+                      index={i + 1}
+                      btcPrice={btcPrice}
+                    />
                   ))}
             </div>
           </motion.div>
@@ -334,6 +358,7 @@ export function Dashboard() {
                       trade={trade}
                       index={i + 1}
                       userName={liveTradeUserNames.get(trade.user)}
+                      btcPrice={btcPrice}
                     />
                   ))}
               {!tradesLoading && liveTrades.length === 0 && (
