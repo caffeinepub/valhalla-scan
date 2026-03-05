@@ -1,0 +1,280 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* VALHALLA SCAN - Norse Crypto Terminal Design System */
+
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/assets/fonts/MonaSans-VariableFont_wdth,wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque-VariableFont_opsz,wdth,wght.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.25rem;
+    /* Dark Norse crypto terminal - pure dark mode only */
+    --background: 0.095 0.01 265;
+    --foreground: 0.92 0.015 250;
+    --card: 0.115 0.015 265;
+    --card-foreground: 0.92 0.015 250;
+    --popover: 0.13 0.018 265;
+    --popover-foreground: 0.92 0.015 250;
+    --primary: 0.72 0.18 200;
+    --primary-foreground: 0.08 0.01 265;
+    --secondary: 0.14 0.02 265;
+    --secondary-foreground: 0.85 0.02 250;
+    --muted: 0.16 0.015 265;
+    --muted-foreground: 0.58 0.02 255;
+    --accent: 0.68 0.22 195;
+    --accent-foreground: 0.07 0.01 265;
+    --destructive: 0.65 0.22 25;
+    --destructive-foreground: 0.95 0.01 25;
+    --border: 0.22 0.02 265;
+    --input: 0.18 0.02 265;
+    --ring: 0.68 0.2 200;
+
+    /* Neon accents for crypto terminal */
+    --neon-cyan: 0.75 0.2 195;
+    --neon-gold: 0.78 0.16 85;
+    --neon-red: 0.65 0.22 25;
+    --neon-green: 0.72 0.18 145;
+    --neon-purple: 0.65 0.22 295;
+
+    /* Chart colors */
+    --chart-1: 0.72 0.18 200;
+    --chart-2: 0.72 0.18 145;
+    --chart-3: 0.78 0.16 85;
+    --chart-4: 0.65 0.22 25;
+    --chart-5: 0.65 0.22 295;
+
+    /* Sidebar */
+    --sidebar: 0.08 0.012 265;
+    --sidebar-foreground: 0.85 0.015 250;
+    --sidebar-primary: 0.72 0.18 200;
+    --sidebar-primary-foreground: 0.08 0.01 265;
+    --sidebar-accent: 0.14 0.018 265;
+    --sidebar-accent-foreground: 0.85 0.015 250;
+    --sidebar-border: 0.18 0.02 265;
+    --sidebar-ring: 0.68 0.2 200;
+  }
+
+  /* Always dark - no light mode override needed */
+  html {
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Mona Sans", sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* Override Tailwind's built-in font-mono to use JetBrains Mono */
+  .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  }
+
+  .font-display {
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+
+  /* Neon glow effects */
+  .glow-cyan {
+    box-shadow: 0 0 8px oklch(var(--neon-cyan) / 0.4), 0 0 20px oklch(var(--neon-cyan) / 0.15);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 8px oklch(var(--neon-gold) / 0.4), 0 0 20px oklch(var(--neon-gold) / 0.15);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 8px oklch(var(--neon-green) / 0.4), 0 0 20px oklch(var(--neon-green) / 0.15);
+  }
+
+  .glow-red {
+    box-shadow: 0 0 8px oklch(var(--neon-red) / 0.4), 0 0 20px oklch(var(--neon-red) / 0.15);
+  }
+
+  .text-neon-cyan {
+    color: oklch(var(--neon-cyan));
+  }
+
+  .text-neon-gold {
+    color: oklch(var(--neon-gold));
+  }
+
+  .text-neon-green {
+    color: oklch(var(--neon-green));
+  }
+
+  .text-neon-red {
+    color: oklch(var(--neon-red));
+  }
+
+  .text-neon-purple {
+    color: oklch(var(--neon-purple));
+  }
+
+  .bg-neon-cyan\/10 {
+    background-color: oklch(var(--neon-cyan) / 0.1);
+  }
+
+  .bg-neon-green\/10 {
+    background-color: oklch(var(--neon-green) / 0.1);
+  }
+
+  .bg-neon-red\/10 {
+    background-color: oklch(var(--neon-red) / 0.1);
+  }
+
+  /* Scanline overlay for terminal aesthetic */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      oklch(0 0 0 / 0.03) 2px,
+      oklch(0 0 0 / 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Grid mesh background */
+  .grid-mesh {
+    background-image:
+      linear-gradient(oklch(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Data row hover */
+  .data-row:hover {
+    background-color: oklch(var(--neon-cyan) / 0.05);
+    cursor: pointer;
+  }
+
+  /* Ticker scroll animation */
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .ticker-scroll {
+    animation: ticker-scroll 30s linear infinite;
+  }
+
+  /* Pulse dot */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  /* Number counter animation */
+  @keyframes count-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .count-up {
+    animation: count-up 0.4s ease-out forwards;
+  }
+
+  /* Rune border - Norse-inspired decorative border — stronger glow */
+  .rune-border {
+    border: 1px solid oklch(var(--neon-cyan) / 0.4);
+    box-shadow:
+      inset 0 0 24px oklch(var(--neon-cyan) / 0.06),
+      0 0 12px oklch(var(--neon-cyan) / 0.18),
+      0 0 1px oklch(var(--neon-cyan) / 0.5);
+  }
+
+  /* Viking/Norse diamond accent */
+  .diamond-accent::before {
+    content: "◆";
+    color: oklch(var(--neon-cyan));
+    margin-right: 0.5rem;
+    font-size: 0.6em;
+    vertical-align: middle;
+  }
+
+  /* Active nav item glow */
+  .nav-active-glow {
+    box-shadow: 0 0 10px oklch(var(--neon-cyan) / 0.2), inset 0 0 10px oklch(var(--neon-cyan) / 0.05);
+  }
+
+  /* Buy/Sell badge glow */
+  .badge-buy {
+    background-color: oklch(var(--neon-green) / 0.12);
+    color: oklch(var(--neon-green));
+    box-shadow: 0 0 6px oklch(var(--neon-green) / 0.35), inset 0 0 4px oklch(var(--neon-green) / 0.1);
+    border: 1px solid oklch(var(--neon-green) / 0.3);
+  }
+
+  .badge-sell {
+    background-color: oklch(var(--neon-red) / 0.12);
+    color: oklch(var(--neon-red));
+    box-shadow: 0 0 6px oklch(var(--neon-red) / 0.35), inset 0 0 4px oklch(var(--neon-red) / 0.1);
+    border: 1px solid oklch(var(--neon-red) / 0.3);
+  }
+
+  /* Stat value glow — make the big numbers pop */
+  .stat-value-glow {
+    text-shadow: 0 0 12px oklch(var(--neon-cyan) / 0.4), 0 0 24px oklch(var(--neon-cyan) / 0.15);
+  }
+
+  /* Table row — stronger hover and divider */
+  .table-row-hover:hover {
+    background-color: oklch(var(--neon-cyan) / 0.07);
+    border-left: 2px solid oklch(var(--neon-cyan) / 0.5);
+  }
+
+  /* Section header — elevated label bar */
+  .section-header {
+    background: linear-gradient(
+      90deg,
+      oklch(var(--muted) / 0.6) 0%,
+      oklch(var(--card)) 100%
+    );
+    border-bottom: 1px solid oklch(var(--border));
+  }
+
+  /* Neon separator line */
+  .neon-sep {
+    height: 1px;
+    background: linear-gradient(90deg, oklch(var(--neon-cyan) / 0.4), transparent);
+  }
+}
