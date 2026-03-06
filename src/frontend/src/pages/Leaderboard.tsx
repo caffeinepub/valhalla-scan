@@ -149,7 +149,7 @@ function LeaderboardRow({ token, rank, valueKey, index }: LeaderboardRowProps) {
         <div className="text-xs font-mono text-foreground">
           {formatPrice(token.price)}
         </div>
-        <div className="text-[10px] text-muted-foreground">BTC</div>
+        <div className="text-[10px] text-muted-foreground">PRICE</div>
       </div>
 
       {/* Change */}

@@ -45,6 +45,7 @@ import {
   formatPrice,
   formatUSD,
   pctColor,
+  priceToSats,
   satsToUSD,
   timeAgo,
   truncatePrincipal,
@@ -108,15 +109,16 @@ function PriceChart({ tokenId }: { tokenId: string }) {
     fetchChart();
   }, [fetchChart]);
 
+  // Keep price values in sats (raw) for chart display
   const chartData = data.map((bar) => ({
     time: new Date(bar.time * 1000).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     }),
-    close: bar.close / 1e8,
-    open: bar.open / 1e8,
-    high: bar.high / 1e8,
-    low: bar.low / 1e8,
+    close: bar.close,
+    open: bar.open,
+    high: bar.high,
+    low: bar.low,
     volume: bar.volume || 0,
   }));
 
@@ -211,7 +213,11 @@ function PriceChart({ tokenId }: { tokenId: string }) {
                 tickLine={false}
                 axisLine={false}
                 width={70}
-                tickFormatter={(v: number) => v.toExponential(3)}
+                tickFormatter={(v: number) => {
+                  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+                  if (v >= 1_000) return `${(v / 1_000).toFixed(1)}K`;
+                  return `${v}`;
+                }}
               />
               <Tooltip
                 contentStyle={{
@@ -223,10 +229,7 @@ function PriceChart({ tokenId }: { tokenId: string }) {
                 }}
                 labelStyle={{ color: "oklch(0.92 0.015 250)" }}
                 itemStyle={{ color: strokeColor }}
-                formatter={(value: number) => [
-                  value.toFixed(10),
-                  "Price (BTC)",
-                ]}
+                formatter={(value: number) => [formatPrice(value), "Price"]}
               />
               <Area
                 type="monotone"
@@ -401,11 +404,11 @@ export function TokenDetail() {
           {/* Center: Price */}
           <div className="flex-1 min-w-0">
             <div className="font-mono text-2xl font-bold text-foreground">
-              {formatPrice(token.price)} BTC
+              {formatPrice(token.price)}
             </div>
             {btcPrice && token.price && (
               <div className="font-mono text-sm text-muted-foreground mt-0.5">
-                ≈ {formatUSD(satsToUSD(token.price, btcPrice))}
+                ≈ {formatUSD(satsToUSD(priceToSats(token.price), btcPrice))}
               </div>
             )}
             <div
@@ -577,7 +580,7 @@ export function TokenDetail() {
                 <TableRow className="border-border hover:bg-transparent">
                   <TableHead className="font-mono text-xs">TYPE</TableHead>
                   <TableHead className="font-mono text-xs">
-                    BTC AMOUNT
+                    AMOUNT (SATS)
                   </TableHead>
                   <TableHead className="font-mono text-xs hidden sm:table-cell">
                     TOKENS

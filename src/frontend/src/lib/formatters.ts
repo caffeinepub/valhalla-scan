@@ -3,6 +3,15 @@
 const SATS_PER_BTC = 1e8;
 
 /**
+ * Odin.fun stores token price as milli-satoshi (1/1000 of a satoshi).
+ * Divide by 1000 to get the true satoshi value shown on Odin.fun.
+ */
+export function priceToSats(rawPrice: number | undefined | null): number {
+  if (rawPrice === undefined || rawPrice === null) return 0;
+  return rawPrice / 1000;
+}
+
+/**
  * Convert satoshis to BTC
  */
 export function satsToBTC(sats: number): number {
@@ -10,23 +19,27 @@ export function satsToBTC(sats: number): number {
 }
 
 /**
- * Format BTC amount (from sats) to a readable string
+ * Format amount in satoshis to a readable string.
+ * Always uses satoshi (sats) as the unit — matching Odin.fun.
+ * 1 Satoshi = 0.00000001 BTC.
+ * Uses compact K/M notation for large sats values.
  */
 export function formatBTC(
   sats: number | undefined | null,
-  decimals = 8,
+  _decimals = 8,
 ): string {
   if (sats === undefined || sats === null) return "—";
-  const btc = sats / SATS_PER_BTC;
-  if (btc === 0) return "0 BTC";
-  if (btc < 0.00000001) return "<0.00000001 BTC";
-  if (btc < 0.001) return `${btc.toFixed(8)} BTC`;
-  if (btc < 1) return `${btc.toFixed(6)} BTC`;
-  return `${btc.toFixed(decimals)} BTC`;
+  if (sats === 0) return "0 sats";
+  // Always display in sats — compact for large numbers
+  if (sats >= 1_000_000_000)
+    return `${(sats / 1_000_000_000).toFixed(2)}B sats`;
+  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(2)}M sats`;
+  if (sats >= 1_000) return `${(sats / 1_000).toFixed(2)}K sats`;
+  return `${sats.toLocaleString("en-US")} sats`;
 }
 
 /**
- * Format BTC number without unit suffix
+ * Format BTC number without unit suffix (kept for internal use)
  */
 export function formatBTCRaw(
   sats: number | undefined | null,
@@ -39,40 +52,44 @@ export function formatBTCRaw(
 }
 
 /**
- * Format large numbers with M/K/B suffixes (for sats values)
+ * Format large numbers with compact sats notation
  */
 export function formatSats(sats: number | undefined | null): string {
   if (sats === undefined || sats === null) return "—";
-  if (sats >= 1e11) return `${(sats / 1e11).toFixed(2)}K BTC`;
-  if (sats >= 1e8) return `${(sats / 1e8).toFixed(4)} BTC`;
-  if (sats >= 1e6) return `${(sats / 1e6).toFixed(2)}M sats`;
-  if (sats >= 1e3) return `${(sats / 1e3).toFixed(2)}K sats`;
+  if (sats >= 1_000_000_000)
+    return `${(sats / 1_000_000_000).toFixed(2)}B sats`;
+  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(2)}M sats`;
+  if (sats >= 1_000) return `${(sats / 1_000).toFixed(2)}K sats`;
   return `${sats} sats`;
 }
 
 /**
- * Format market cap / volume (in sats) to display-friendly format
+ * Format market cap / volume (in sats) to display-friendly sats format
  */
 export function formatMarketCap(sats: number | undefined | null): string {
   if (sats === undefined || sats === null) return "—";
-  const btc = sats / SATS_PER_BTC;
-  if (btc >= 1000) return `${(btc / 1000).toFixed(2)}K BTC`;
-  if (btc >= 1) return `${btc.toFixed(4)} BTC`;
-  if (btc >= 0.001) return `${btc.toFixed(6)} BTC`;
-  return `${sats.toLocaleString()} sats`;
+  if (sats >= 1_000_000_000)
+    return `${(sats / 1_000_000_000).toFixed(2)}B sats`;
+  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(2)}M sats`;
+  if (sats >= 1_000) return `${(sats / 1_000).toFixed(2)}K sats`;
+  return `${sats.toLocaleString("en-US")} sats`;
 }
 
 /**
- * Format price in sats to BTC with appropriate precision
+ * Format token price in sats (per token)
+ * Odin.fun stores price as milli-satoshi — divide by 1000 first.
+ * Always shown in sats to match Odin.fun display.
  */
-export function formatPrice(sats: number | undefined | null): string {
-  if (sats === undefined || sats === null) return "—";
-  const btc = sats / SATS_PER_BTC;
-  if (btc === 0) return "0";
-  if (btc < 0.000000001) return `${sats} sats`;
-  if (btc < 0.00001) return btc.toExponential(4);
-  if (btc < 0.001) return btc.toFixed(8);
-  return btc.toFixed(6);
+export function formatPrice(rawPrice: number | undefined | null): string {
+  if (rawPrice === undefined || rawPrice === null) return "—";
+  if (rawPrice === 0) return "0 sats";
+  const sats = rawPrice / 1000;
+  // Very small fractional sats — show with decimal precision
+  if (sats < 1) return `${sats.toFixed(6)} sats`;
+  if (sats < 1_000)
+    return `${sats.toLocaleString("en-US", { maximumFractionDigits: 4 })} sats`;
+  if (sats < 1_000_000) return `${(sats / 1_000).toFixed(2)}K sats`;
+  return `${(sats / 1_000_000).toFixed(2)}M sats`;
 }
 
 /**

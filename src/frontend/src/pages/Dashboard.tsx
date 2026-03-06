@@ -116,23 +116,12 @@ export function Dashboard() {
             Bitcoin Token Intelligence Terminal — powered by odin.fun
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {btcPrice && (
-            <div className="flex items-center gap-1.5 bg-card border border-border rounded-sm px-2.5 py-1.5">
-              <Bitcoin className="h-3 w-3 text-neon-gold" />
-              <span className="text-xs font-mono font-bold text-neon-gold tabular-nums">
-                $
-                {btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
-            </span>
-            <span className="text-xs font-mono text-neon-green">LIVE</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
+          </span>
+          <span className="text-xs font-mono text-neon-green">LIVE</span>
         </div>
       </motion.div>
 

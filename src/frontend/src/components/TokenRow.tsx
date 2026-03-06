@@ -71,7 +71,7 @@ export function TokenRow({
             {formatPrice(token.price)}
           </div>
           <div className="text-[9px] font-mono text-muted-foreground/60 tracking-wider uppercase">
-            BTC
+            PRICE
           </div>
         </div>
         <div className="w-24 hidden md:block">

@@ -98,10 +98,21 @@ function normalizeTrade(r: RawTrade): Trade {
     user_username: r.user_username,
     user_image: r.user_image,
     type: r.buy ? "buy" : "sell",
-    btc_amount: r.amount_btc,
+    // amount_btc from API is in milli-satoshi — divide by 1000 to get sats
+    btc_amount: r.amount_btc != null ? r.amount_btc / 1000 : r.amount_btc,
     token_amount: r.amount_token,
     price: r.price,
     time: r.time,
+  };
+}
+
+// token.marketcap and token.volume are also stored as milli-satoshi
+function normalizeToken(t: Token): Token {
+  return {
+    ...t,
+    // price is left as-is (milli-satoshi) — formatPrice() handles the /1000 internally
+    marketcap: t.marketcap != null ? t.marketcap / 1000 : t.marketcap,
+    volume: t.volume != null ? t.volume / 1000 : t.volume,
   };
 }
 
@@ -202,14 +213,19 @@ export async function getTokens(params?: {
   bonded?: boolean;
   has_twitter?: boolean;
 }): Promise<TokensResponse> {
-  return apiFetch<TokensResponse>(
+  const raw = await apiFetch<TokensResponse>(
     "/tokens",
     params as Record<string, string | number | boolean>,
   );
+  return {
+    ...raw,
+    data: (raw.data || []).map(normalizeToken),
+  };
 }
 
 export async function getToken(id: string): Promise<Token> {
-  return apiFetch<Token>(`/token/${id}`);
+  const raw = await apiFetch<Token>(`/token/${id}`);
+  return normalizeToken(raw);
 }
 
 export async function getTokenTvFeed(
@@ -221,15 +237,27 @@ export async function getTokenTvFeed(
     { resolution },
   );
   // Handle both array and wrapped response
-  if (Array.isArray(result)) return result;
-  if (
+  let bars: TVFeedBar[];
+  if (Array.isArray(result)) {
+    bars = result;
+  } else if (
     result &&
     typeof result === "object" &&
     "data" in result &&
     Array.isArray(result.data)
-  )
-    return result.data;
-  return [];
+  ) {
+    bars = result.data;
+  } else {
+    bars = [];
+  }
+  // TV feed OHLC prices are also stored in milli-satoshi — divide by 1000
+  return bars.map((bar) => ({
+    ...bar,
+    open: bar.open != null ? bar.open / 1000 : bar.open,
+    high: bar.high != null ? bar.high / 1000 : bar.high,
+    low: bar.low != null ? bar.low / 1000 : bar.low,
+    close: bar.close != null ? bar.close / 1000 : bar.close,
+  }));
 }
 
 export async function getTokenTrades(
@@ -276,21 +304,57 @@ export async function getRecentTrades(params?: {
 }
 
 export async function getUser(id: string): Promise<UserProfile> {
-  return apiFetch<UserProfile>(`/user/${id}`);
+  const raw = await apiFetch<UserProfile>(`/user/${id}`);
+  return {
+    ...raw,
+    // btc_balance and referral_earnings are stored as milli-satoshi
+    btc_balance:
+      raw.btc_balance != null ? raw.btc_balance / 1000 : raw.btc_balance,
+    referral_earnings:
+      raw.referral_earnings != null
+        ? raw.referral_earnings / 1000
+        : raw.referral_earnings,
+  };
 }
 
 export async function getUserStats(id: string): Promise<UserStats> {
-  return apiFetch<UserStats>(`/user/${id}/stats`);
+  const raw = await apiFetch<UserStats>(`/user/${id}/stats`);
+  return {
+    ...raw,
+    // volume and P&L fields are stored as milli-satoshi
+    volume: raw.volume != null ? raw.volume / 1000 : raw.volume,
+    realized_pnl:
+      raw.realized_pnl != null ? raw.realized_pnl / 1000 : raw.realized_pnl,
+    unrealized_pnl:
+      raw.unrealized_pnl != null
+        ? raw.unrealized_pnl / 1000
+        : raw.unrealized_pnl,
+  };
 }
 
 export async function getUserBalances(
   id: string,
 ): Promise<UserBalancesResponse> {
-  return apiFetch<UserBalancesResponse>(`/user/${id}/balances`);
+  const raw = await apiFetch<UserBalancesResponse>(`/user/${id}/balances`);
+  return {
+    ...raw,
+    data: (raw.data || []).map((b) => ({
+      ...b,
+      // value and unrealized_pnl are stored as milli-satoshi
+      value: b.value != null ? b.value / 1000 : b.value,
+      unrealized_pnl:
+        b.unrealized_pnl != null ? b.unrealized_pnl / 1000 : b.unrealized_pnl,
+    })),
+  };
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  return apiFetch<DashboardStats>("/statistics/dashboard");
+  const raw = await apiFetch<DashboardStats>("/statistics/dashboard");
+  return {
+    ...raw,
+    // btc_volume is stored as milli-satoshi
+    btc_volume: raw.btc_volume != null ? raw.btc_volume / 1000 : raw.btc_volume,
+  };
 }
 
 export async function searchOdin(query: string): Promise<SearchResult> {

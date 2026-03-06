@@ -17,28 +17,21 @@ import {
 } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import {
-  Activity,
-  Bitcoin,
-  Filter,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react";
+import { Activity, Filter, TrendingDown, TrendingUp } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-
-const SATS_PER_BTC = 1e8;
 
 export function LiveFeed() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
-  const [minBTC, setMinBTC] = useState(0);
+  // minSats: minimum sats filter (0 = all)
+  const [minSats, setMinSats] = useState(0);
   const [newTradeIds, setNewTradeIds] = useState<Set<string>>(new Set());
   const refreshRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevIdsRef = useRef<Set<string>>(new Set());
   const btcPrice = useBtcPrice();
 
-  const fetchTrades = async (minBTCAmount = 0) => {
+  const fetchTrades = async (minSatsAmount = 0) => {
     try {
       const result = await getRecentTrades({
         limit: 50,
@@ -46,10 +39,8 @@ export function LiveFeed() {
       });
       const allTrades = result.data || [];
       const filtered =
-        minBTCAmount > 0
-          ? allTrades.filter(
-              (t) => (t.btc_amount || 0) >= minBTCAmount * SATS_PER_BTC,
-            )
+        minSatsAmount > 0
+          ? allTrades.filter((t) => (t.btc_amount || 0) >= minSatsAmount)
           : allTrades;
 
       const currentIds = new Set(filtered.map((t) => t.id));
@@ -70,14 +61,14 @@ export function LiveFeed() {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchTrades defined in component, minBTC is real dep
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchTrades defined in component, minSats is real dep
   useEffect(() => {
-    fetchTrades(minBTC);
-    refreshRef.current = setInterval(() => fetchTrades(minBTC), 5000);
+    fetchTrades(minSats);
+    refreshRef.current = setInterval(() => fetchTrades(minSats), 5000);
     return () => {
       if (refreshRef.current) clearInterval(refreshRef.current);
     };
-  }, [minBTC]);
+  }, [minSats]);
 
   const tradeUserIds = useMemo(
     () => trades.map((t) => t.user).filter(Boolean),
@@ -112,23 +103,12 @@ export function LiveFeed() {
             Real-time trade stream — refreshes every 5 seconds
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {btcPrice && (
-            <div className="flex items-center gap-1.5 bg-card border border-border rounded-sm px-2.5 py-1.5">
-              <Bitcoin className="h-3 w-3 text-neon-gold" />
-              <span className="text-xs font-mono font-bold text-neon-gold tabular-nums">
-                $
-                {btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
-            </span>
-            <span className="text-xs font-mono text-neon-green">LIVE</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
+          </span>
+          <span className="text-xs font-mono text-neon-green">LIVE</span>
         </div>
       </motion.div>
 
@@ -206,23 +186,26 @@ export function LiveFeed() {
             <Slider
               data-ocid="feed.whale.input"
               min={0}
-              max={1}
-              step={0.01}
-              value={[minBTC]}
-              onValueChange={([val]) => setMinBTC(val)}
+              max={1_000_000}
+              step={1000}
+              value={[minSats]}
+              onValueChange={([val]) => setMinSats(val)}
               className="w-full"
             />
           </div>
-          <div className="text-right min-w-[110px]">
+          <div className="text-right min-w-[130px]">
             <div className="font-mono text-sm font-bold text-neon-gold">
-              ≥ {minBTC === 0 ? "ALL" : `${minBTC.toFixed(3)} BTC`}
+              ≥{" "}
+              {minSats === 0
+                ? "ALL"
+                : `${minSats.toLocaleString("en-US")} sats`}
             </div>
-            {btcPrice && minBTC > 0 && (
+            {btcPrice && minSats > 0 && (
               <div className="text-[10px] font-mono text-muted-foreground">
-                ≥ {formatUSD(minBTC * btcPrice)}
+                ≥ {formatUSD(satsToUSD(minSats, btcPrice))}
               </div>
             )}
-            {minBTC === 0 && (
+            {minSats === 0 && (
               <div className="text-[10px] font-mono text-muted-foreground">
                 MIN AMOUNT
               </div>
@@ -248,10 +231,7 @@ export function LiveFeed() {
             TYPE
           </div>
           <div className="flex-1 text-[10px] font-mono text-muted-foreground">
-            BTC AMOUNT
-            {btcPrice
-              ? ` / USD @ $${btcPrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
-              : ""}
+            AMOUNT (SATS)
           </div>
           <div className="hidden sm:block w-16 text-[10px] font-mono text-muted-foreground text-right">
             TOKENS
