@@ -88,7 +88,13 @@ const RESOLUTIONS: { value: Resolution; label: string }[] = [
   { value: "D", label: "1D" },
 ];
 
-function PriceChart({ tokenId }: { tokenId: string }) {
+function PriceChart({
+  tokenId,
+  currentPrice,
+}: {
+  tokenId: string;
+  currentPrice?: number;
+}) {
   const [resolution, setResolution] = useState<Resolution>("60");
   const [data, setData] = useState<TVFeedBar[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,23 +118,37 @@ function PriceChart({ tokenId }: { tokenId: string }) {
 
   useEffect(() => {
     fetchChart(false);
-    // Live refresh every 30 seconds
-    const interval = setInterval(() => fetchChart(true), 30_000);
+    // Live refresh every 15 seconds for near real-time chart
+    const interval = setInterval(() => fetchChart(true), 15_000);
     return () => clearInterval(interval);
   }, [fetchChart]);
 
-  // Keep price values in sats (raw) for chart display
-  const chartData = data.map((bar) => ({
-    time: new Date(bar.time * 1000).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    close: bar.close,
-    open: bar.open,
-    high: bar.high,
-    low: bar.low,
-    volume: bar.volume || 0,
-  }));
+  // currentPrice from token is in milli-satoshi; TV feed bars are already in sats.
+  // Convert currentPrice to sats so units match.
+  const currentPriceSats =
+    currentPrice != null ? currentPrice / 1000 : undefined;
+
+  // Override the last bar's close (and high if price moved up) with the live token price
+  const chartData = data.map((bar, idx) => {
+    const isLast = idx === data.length - 1;
+    const closeVal =
+      isLast && currentPriceSats != null ? currentPriceSats : bar.close;
+    const highVal =
+      isLast && currentPriceSats != null
+        ? Math.max(bar.high, currentPriceSats)
+        : bar.high;
+    return {
+      time: new Date(bar.time * 1000).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      close: closeVal,
+      open: bar.open,
+      high: highVal,
+      low: bar.low,
+      volume: bar.volume || 0,
+    };
+  });
 
   const isPositive =
     chartData.length >= 2
@@ -147,7 +167,7 @@ function PriceChart({ tokenId }: { tokenId: string }) {
       className="bg-card border border-border rounded-sm overflow-hidden"
     >
       <div className="flex items-center justify-between p-3 border-b border-border">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <BarChart3 className="h-4 w-4 text-neon-gold" />
           <span className="font-display font-semibold text-sm text-neon-gold/80">
             PRICE CHART
@@ -161,6 +181,11 @@ function PriceChart({ tokenId }: { tokenId: string }) {
               LIVE
             </span>
           </div>
+          {currentPriceSats != null && (
+            <span className="font-mono text-[11px] font-bold text-neon-gold bg-neon-gold/10 border border-neon-gold/30 rounded px-1.5 py-0.5">
+              {formatPrice(currentPrice)}
+            </span>
+          )}
           {lastUpdated && (
             <span className="font-mono text-[10px] text-muted-foreground/50 hidden sm:inline">
               {lastUpdated.toLocaleTimeString("en-US", {
@@ -349,6 +374,12 @@ export function TokenDetail() {
     fetchHolders();
     fetchComments();
   }, [fetchToken, fetchTrades, fetchHolders, fetchComments]);
+
+  // Refresh token price every 15 seconds so displayed price and chart stay in sync
+  useEffect(() => {
+    const interval = setInterval(() => fetchToken(), 15_000);
+    return () => clearInterval(interval);
+  }, [fetchToken]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: tradesPage is a trigger, not a dep of fetchTrades
   useEffect(() => {
@@ -584,7 +615,7 @@ export function TokenDetail() {
       </motion.div>
 
       {/* Chart */}
-      <PriceChart tokenId={id} />
+      <PriceChart tokenId={id} currentPrice={token?.price} />
 
       {/* Tabs: Trades / Holders / Comments */}
       <motion.div
