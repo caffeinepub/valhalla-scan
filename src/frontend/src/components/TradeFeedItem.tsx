@@ -118,7 +118,7 @@ export function TradeFeedItem({
           {formatNumber(trade.token_amount)}
         </div>
         <div className="text-[8px] font-mono text-muted-foreground/40 tracking-wider">
-          TKN
+          {trade.token_ticker || "TKN"}
         </div>
       </div>
 

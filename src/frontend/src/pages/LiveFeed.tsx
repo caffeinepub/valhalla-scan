@@ -384,7 +384,7 @@ export function LiveFeed() {
                         {formatNumber(trade.token_amount)}
                       </div>
                       <div className="text-[9px] font-mono text-muted-foreground/40 tracking-wider">
-                        TKN
+                        {trade.token_ticker || "TKN"}
                       </div>
                     </div>
 
