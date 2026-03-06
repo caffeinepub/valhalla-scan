@@ -87,9 +87,9 @@ export function Layout({ children }: LayoutProps) {
                 className="flex items-center gap-2 overflow-hidden"
               >
                 <img
-                  src="/assets/uploads/1982-1.jpeg"
+                  src="/assets/generated/valhalla-logo-transparent.png"
                   alt="VALHALLA SCAN"
-                  className="w-8 h-8 flex-shrink-0 rounded-sm object-cover"
+                  className="w-8 h-8 flex-shrink-0 rounded-none object-contain"
                 />
                 <div className="flex-shrink-0">
                   <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
@@ -104,9 +104,9 @@ export function Layout({ children }: LayoutProps) {
           </AnimatePresence>
           {!sidebarOpen && (
             <img
-              src="/assets/uploads/1982-1.jpeg"
+              src="/assets/generated/valhalla-logo-transparent.png"
               alt="V"
-              className="w-8 h-8 mx-auto rounded-sm object-cover"
+              className="w-8 h-8 mx-auto rounded-none object-contain"
             />
           )}
           <button
@@ -207,9 +207,9 @@ export function Layout({ children }: LayoutProps) {
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <div className="flex items-center gap-2">
                   <img
-                    src="/assets/uploads/1982-1.jpeg"
+                    src="/assets/generated/valhalla-logo-transparent.png"
                     alt="VALHALLA SCAN"
-                    className="w-8 h-8 rounded-sm object-cover"
+                    className="w-8 h-8 rounded-none object-contain"
                   />
                   <div>
                     <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
@@ -273,9 +273,9 @@ export function Layout({ children }: LayoutProps) {
           {/* Mobile logo */}
           <div className="md:hidden flex items-center gap-2">
             <img
-              src="/assets/uploads/1982-1.jpeg"
+              src="/assets/generated/valhalla-logo-transparent.png"
               alt="VALHALLA SCAN"
-              className="w-7 h-7 rounded-sm object-cover"
+              className="w-7 h-7 rounded-none object-contain"
             />
             <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
               VALHALLA SCAN
