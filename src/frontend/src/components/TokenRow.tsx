@@ -32,7 +32,7 @@ export function TokenRow({
       params={{ id: token.id }}
       className={cn(
         "flex items-center gap-3 px-3 py-2.5 border-l-2 border-l-transparent border-b border-b-border/40",
-        "hover:bg-neon-cyan/[0.06] hover:border-l-neon-cyan/60 transition-all duration-150 cursor-pointer group",
+        "hover:bg-neon-gold/[0.06] hover:border-l-neon-gold/60 transition-all duration-150 cursor-pointer group",
       )}
       data-ocid={`screener.tokens.table.item.${index}`}
     >
@@ -49,7 +49,7 @@ export function TokenRow({
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-semibold truncate text-foreground group-hover:text-neon-cyan transition-colors leading-tight">
+          <span className="text-[13px] font-semibold truncate text-foreground group-hover:text-neon-gold transition-colors leading-tight">
             {token.name}
           </span>
           {token.bonded && (
@@ -61,7 +61,7 @@ export function TokenRow({
             </Badge>
           )}
         </div>
-        <span className="text-[11px] font-mono text-muted-foreground/70 tracking-wide">
+        <span className="text-[11px] font-mono text-neon-gold/60 tracking-wide">
           ${token.ticker}
         </span>
       </div>

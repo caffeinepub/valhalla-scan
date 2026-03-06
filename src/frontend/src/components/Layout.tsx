@@ -87,15 +87,15 @@ export function Layout({ children }: LayoutProps) {
                 className="flex items-center gap-2 overflow-hidden"
               >
                 <img
-                  src="/assets/generated/valhalla-logo-transparent.dim_200x200.png"
+                  src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
                   alt="VALHALLA SCAN"
-                  className="w-8 h-8 flex-shrink-0"
+                  className="w-8 h-8 flex-shrink-0 rounded-sm"
                 />
                 <div className="flex-shrink-0">
-                  <span className="font-display font-bold text-sm text-neon-cyan tracking-wider">
+                  <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
                     VALHALLA
                   </span>
-                  <span className="block font-mono text-[10px] text-muted-foreground tracking-widest">
+                  <span className="block font-mono text-[10px] text-neon-gold/70 tracking-widest">
                     SCAN
                   </span>
                 </div>
@@ -104,9 +104,9 @@ export function Layout({ children }: LayoutProps) {
           </AnimatePresence>
           {!sidebarOpen && (
             <img
-              src="/assets/generated/valhalla-logo-transparent.dim_200x200.png"
+              src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
               alt="V"
-              className="w-8 h-8 mx-auto"
+              className="w-8 h-8 mx-auto rounded-sm"
             />
           )}
           <button
@@ -137,18 +137,18 @@ export function Layout({ children }: LayoutProps) {
                   "flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all duration-150 group relative",
                   "text-sm font-medium",
                   isActive
-                    ? "bg-primary/10 text-neon-cyan border border-primary/20 nav-active-glow"
+                    ? "bg-primary/10 text-neon-gold border border-primary/20 nav-active-glow"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground",
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-neon-cyan rounded-r-full" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-neon-gold rounded-r-full" />
                 )}
                 <Icon
                   className={cn(
                     "h-4 w-4 flex-shrink-0",
                     isActive
-                      ? "text-neon-cyan"
+                      ? "text-neon-gold"
                       : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
@@ -207,15 +207,15 @@ export function Layout({ children }: LayoutProps) {
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <div className="flex items-center gap-2">
                   <img
-                    src="/assets/generated/valhalla-logo-transparent.dim_200x200.png"
+                    src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
                     alt="VALHALLA SCAN"
-                    className="w-8 h-8"
+                    className="w-8 h-8 rounded-sm"
                   />
                   <div>
-                    <span className="font-display font-bold text-sm text-neon-cyan tracking-wider">
+                    <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
                       VALHALLA
                     </span>
-                    <span className="block font-mono text-[10px] text-muted-foreground tracking-widest">
+                    <span className="block font-mono text-[10px] text-neon-gold/70 tracking-widest">
                       SCAN
                     </span>
                   </div>
@@ -242,7 +242,7 @@ export function Layout({ children }: LayoutProps) {
                         "flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all",
                         "text-sm font-medium",
                         isActive
-                          ? "bg-primary/10 text-neon-cyan border border-primary/20"
+                          ? "bg-primary/10 text-neon-gold border border-primary/20"
                           : "text-sidebar-foreground hover:bg-sidebar-accent",
                       )}
                     >
@@ -273,11 +273,11 @@ export function Layout({ children }: LayoutProps) {
           {/* Mobile logo */}
           <div className="md:hidden flex items-center gap-2">
             <img
-              src="/assets/generated/valhalla-logo-transparent.dim_200x200.png"
+              src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
               alt="VALHALLA SCAN"
-              className="w-7 h-7"
+              className="w-7 h-7 rounded-sm"
             />
-            <span className="font-display font-bold text-sm text-neon-cyan tracking-wider">
+            <span className="font-display font-bold text-sm gold-gradient-text tracking-wider">
               VALHALLA SCAN
             </span>
           </div>
@@ -299,7 +299,7 @@ export function Layout({ children }: LayoutProps) {
 
           {/* Header right */}
           <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-xs font-mono text-neon-gold">
               <Zap className="h-3 w-3 text-neon-gold" />
               <span>BITCOIN</span>
             </div>

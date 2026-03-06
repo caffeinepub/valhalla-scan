@@ -1,34 +1,17 @@
-import { StatCard } from "@/components/StatCard";
 import { TokenRow } from "@/components/TokenRow";
 import { TradeFeedItem } from "@/components/TradeFeedItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBtcPrice } from "@/hooks/use-btc-price";
 import { useUserNames } from "@/hooks/use-user-names";
-import {
-  type DashboardStats,
-  type Token,
-  type Trade,
-  getDashboardStats,
-  getRecentTrades,
-  getTokens,
-} from "@/lib/api";
-import { formatBTC, formatMarketCapUSD, formatNumber } from "@/lib/formatters";
-import {
-  Activity,
-  Bitcoin,
-  Clock,
-  Coins,
-  TrendingDown,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { type Token, type Trade, getRecentTrades, getTokens } from "@/lib/api";
+
+import { Activity, Clock, TrendingDown, TrendingUp } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export function Dashboard() {
   const btcPrice = useBtcPrice();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [gainers, setGainers] = useState<Token[]>([]);
   const [losers, setLosers] = useState<Token[]>([]);
   const [recentTokens, setRecentTokens] = useState<Token[]>([]);
@@ -39,26 +22,23 @@ export function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const [statsData, gainersData, losersData, recentData] =
-        await Promise.all([
-          getDashboardStats().catch(() => ({}) as DashboardStats),
-          getTokens({ limit: 10, sort: "price_delta_1h:desc" }).catch(() => ({
-            data: [],
-            count: 0,
-            page: 1,
-          })),
-          getTokens({ limit: 10, sort: "price_delta_1h:asc" }).catch(() => ({
-            data: [],
-            count: 0,
-            page: 1,
-          })),
-          getTokens({ limit: 8, sort: "created_time:desc" }).catch(() => ({
-            data: [],
-            count: 0,
-            page: 1,
-          })),
-        ]);
-      setStats(statsData);
+      const [gainersData, losersData, recentData] = await Promise.all([
+        getTokens({ limit: 10, sort: "price_delta_1h:desc" }).catch(() => ({
+          data: [],
+          count: 0,
+          page: 1,
+        })),
+        getTokens({ limit: 10, sort: "price_delta_1h:asc" }).catch(() => ({
+          data: [],
+          count: 0,
+          page: 1,
+        })),
+        getTokens({ limit: 8, sort: "created_time:desc" }).catch(() => ({
+          data: [],
+          count: 0,
+          page: 1,
+        })),
+      ]);
       setGainers(gainersData.data || []);
       setLosers(losersData.data || []);
       setRecentTokens(recentData.data || []);
@@ -109,12 +89,9 @@ export function Dashboard() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground diamond-accent tracking-tight leading-none">
+          <h1 className="font-display text-4xl font-bold gold-gradient-text diamond-accent tracking-tight leading-none">
             VALHALLA SCAN
           </h1>
-          <p className="text-[11px] font-mono text-muted-foreground mt-1.5 tracking-wide">
-            Bitcoin Token Intelligence Terminal — powered by odin.fun
-          </p>
         </div>
         <div className="flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5">
@@ -125,41 +102,39 @@ export function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Stats cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard
-          label="Total Tokens"
-          value={loading ? "—" : formatNumber(stats?.token_count ?? 0)}
-          subValue="on odin.fun"
-          icon={<Coins className="h-4 w-4" />}
-          delay={0}
+      {/* Hero logo banner */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="flex flex-col items-center justify-center py-6 rounded-sm overflow-hidden relative"
+        style={{
+          background: "#000000",
+          border: "1px solid oklch(0.45 0.18 220 / 0.5)",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, oklch(0.35 0.20 220 / 0.25) 0%, transparent 65%)",
+          }}
         />
-        <StatCard
-          label="24h Trades"
-          value={loading ? "—" : formatNumber(stats?.trade_count ?? 0)}
-          subValue="total transactions"
-          icon={<Activity className="h-4 w-4" />}
-          delay={0.05}
+        <img
+          src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
+          alt="VALHALLA SCAN"
+          className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-2xl"
         />
-        <StatCard
-          label="BTC Volume"
-          value={loading ? "—" : formatBTC(stats?.btc_volume)}
-          subValue={
-            !loading && btcPrice && stats?.btc_volume
-              ? formatMarketCapUSD(stats.btc_volume, btcPrice)
-              : "24h volume"
-          }
-          icon={<Bitcoin className="h-4 w-4" />}
-          delay={0.1}
-        />
-        <StatCard
-          label="Active Users"
-          value={loading ? "—" : formatNumber(stats?.user_count ?? 0)}
-          subValue="total wallets"
-          icon={<Users className="h-4 w-4" />}
-          delay={0.15}
-        />
-      </div>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
+          </span>
+          <span className="text-xs font-display italic text-neon-gold tracking-widest">
+            Valhalla Scan — The Legendary Trading Radar for Warriors
+          </span>
+        </div>
+      </motion.div>
 
       {/* Main grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
@@ -259,8 +234,8 @@ export function Dashboard() {
             className="bg-card border border-border rounded-sm overflow-hidden"
           >
             <div className="flex items-center gap-2.5 px-3 py-2.5 section-header">
-              <Clock className="h-3.5 w-3.5 text-neon-cyan" />
-              <h2 className="font-mono font-semibold text-[11px] tracking-[0.15em] text-foreground/90 uppercase">
+              <Clock className="h-3.5 w-3.5 text-neon-gold" />
+              <h2 className="font-mono font-semibold text-[11px] tracking-[0.15em] text-neon-gold/80 uppercase">
                 Recently Launched
               </h2>
             </div>
@@ -299,8 +274,8 @@ export function Dashboard() {
         >
           <div className="flex items-center justify-between px-3 py-2.5 section-header flex-shrink-0">
             <div className="flex items-center gap-2.5">
-              <Activity className="h-3.5 w-3.5 text-neon-cyan" />
-              <h2 className="font-mono font-semibold text-[11px] tracking-[0.15em] text-foreground/90 uppercase">
+              <Activity className="h-3.5 w-3.5 text-neon-gold" />
+              <h2 className="font-mono font-semibold text-[11px] tracking-[0.15em] text-neon-gold/80 uppercase">
                 Live Trade Feed
               </h2>
             </div>
@@ -374,7 +349,7 @@ export function Dashboard() {
             href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-neon-cyan hover:underline"
+            className="text-neon-gold hover:underline"
           >
             caffeine.ai
           </a>

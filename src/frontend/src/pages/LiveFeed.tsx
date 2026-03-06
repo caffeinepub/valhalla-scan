@@ -96,7 +96,7 @@ export function LiveFeed() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="font-display text-xl font-bold text-foreground diamond-accent">
+          <h1 className="font-display text-2xl font-bold text-neon-gold diamond-accent">
             LIVE FEED
           </h1>
           <p className="text-xs font-mono text-muted-foreground mt-0.5">
@@ -113,15 +113,7 @@ export function LiveFeed() {
       </motion.div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-card border border-border rounded-sm p-3">
-          <div className="text-[10px] font-mono text-muted-foreground">
-            TOTAL TRADES
-          </div>
-          <div className="font-display font-bold text-lg text-foreground">
-            {trades.length}
-          </div>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-sm p-3">
           <div className="text-[10px] font-mono text-muted-foreground">
             BUY VOL
@@ -176,7 +168,7 @@ export function LiveFeed() {
       {/* Whale filter */}
       <div className="bg-card border border-border rounded-sm p-4">
         <div className="flex items-center gap-2 mb-3">
-          <Filter className="h-4 w-4 text-neon-cyan" />
+          <Filter className="h-4 w-4 text-neon-gold" />
           <Label className="text-sm font-mono text-foreground">
             WHALE FILTER
           </Label>
@@ -330,7 +322,7 @@ export function LiveFeed() {
                     <Link
                       to="/token/$id"
                       params={{ id: trade.token_id }}
-                      className="w-20 text-xs font-medium text-foreground hover:text-neon-cyan transition-colors truncate"
+                      className="w-20 text-xs font-mono font-semibold text-neon-gold hover:text-neon-gold/80 transition-colors truncate"
                     >
                       {trade.token_ticker ||
                         trade.token_name ||

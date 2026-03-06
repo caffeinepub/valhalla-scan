@@ -140,8 +140,8 @@ function PriceChart({ tokenId }: { tokenId: string }) {
     >
       <div className="flex items-center justify-between p-3 border-b border-border">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-neon-cyan" />
-          <span className="font-display font-semibold text-sm text-foreground">
+          <BarChart3 className="h-4 w-4 text-neon-gold" />
+          <span className="font-display font-semibold text-sm text-neon-gold/80">
             PRICE CHART
           </span>
         </div>
@@ -192,13 +192,13 @@ function PriceChart({ tokenId }: { tokenId: string }) {
               </defs>
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="oklch(0.22 0.02 265)"
+                stroke="oklch(0.22 0.025 35)"
               />
               <XAxis
                 dataKey="time"
                 tick={{
                   fontSize: 9,
-                  fill: "oklch(0.58 0.02 255)",
+                  fill: "oklch(0.55 0.025 50)",
                   fontFamily: "JetBrains Mono",
                 }}
                 interval="preserveStartEnd"
@@ -207,7 +207,7 @@ function PriceChart({ tokenId }: { tokenId: string }) {
               <YAxis
                 tick={{
                   fontSize: 9,
-                  fill: "oklch(0.58 0.02 255)",
+                  fill: "oklch(0.55 0.025 50)",
                   fontFamily: "JetBrains Mono",
                 }}
                 tickLine={false}
@@ -341,7 +341,7 @@ export function TokenDetail() {
           <Link
             to="/screener"
             search={{ q: undefined }}
-            className="text-neon-cyan hover:underline text-sm font-mono mt-2 inline-block"
+            className="text-neon-gold hover:underline text-sm font-mono mt-2 inline-block"
           >
             ← Back to Screener
           </Link>
@@ -359,7 +359,7 @@ export function TokenDetail() {
       <Link
         to="/screener"
         search={{ q: undefined }}
-        className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-neon-cyan transition-colors"
+        className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-neon-gold transition-colors"
       >
         <ChevronLeft className="h-3 w-3" />
         SCREENER
@@ -403,7 +403,7 @@ export function TokenDetail() {
 
           {/* Center: Price */}
           <div className="flex-1 min-w-0">
-            <div className="font-mono text-2xl font-bold text-foreground">
+            <div className="font-mono text-2xl font-bold text-neon-gold stat-value-glow">
               {formatPrice(token.price)}
             </div>
             {btcPrice && token.price && (
@@ -550,7 +550,7 @@ export function TokenDetail() {
             <TabsTrigger
               value="trades"
               data-ocid="token.trades.tab"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan font-mono text-xs py-3 text-muted-foreground"
+              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-gold data-[state=active]:text-neon-gold font-mono text-xs py-3 text-muted-foreground"
             >
               <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
               TRADES
@@ -558,7 +558,7 @@ export function TokenDetail() {
             <TabsTrigger
               value="holders"
               data-ocid="token.holders.tab"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan font-mono text-xs py-3 text-muted-foreground"
+              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-gold data-[state=active]:text-neon-gold font-mono text-xs py-3 text-muted-foreground"
             >
               <Users className="h-3.5 w-3.5 mr-1.5" />
               HOLDERS
@@ -566,7 +566,7 @@ export function TokenDetail() {
             <TabsTrigger
               value="comments"
               data-ocid="token.comments.tab"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan font-mono text-xs py-3 text-muted-foreground"
+              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-neon-gold data-[state=active]:text-neon-gold font-mono text-xs py-3 text-muted-foreground"
             >
               <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
               COMMENTS
@@ -717,7 +717,7 @@ export function TokenDetail() {
                     <TableCell className="font-mono text-xs text-right">
                       {formatNumber(holder.balance)}
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-right hidden sm:table-cell text-neon-cyan">
+                    <TableCell className="font-mono text-xs text-right hidden sm:table-cell text-neon-gold">
                       {holder.percentage !== undefined
                         ? `${holder.percentage.toFixed(2)}%`
                         : "—"}
@@ -749,7 +749,7 @@ export function TokenDetail() {
                     className="px-4 py-3"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs text-neon-cyan">
+                      <span className="font-mono text-xs text-neon-gold">
                         {commentUserNames.get(comment.user) ??
                           truncatePrincipal(comment.user, 6)}
                       </span>

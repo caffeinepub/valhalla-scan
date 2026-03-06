@@ -108,9 +108,9 @@ export function TokenScreener() {
   const SortIcon = ({ col }: { col: SortKey }) => {
     if (sortKey !== col) return <ChevronUp className="h-3 w-3 opacity-30" />;
     return sortDir === "desc" ? (
-      <ChevronDown className="h-3 w-3 text-neon-cyan" />
+      <ChevronDown className="h-3 w-3 text-neon-gold" />
     ) : (
-      <ChevronUp className="h-3 w-3 text-neon-cyan" />
+      <ChevronUp className="h-3 w-3 text-neon-gold" />
     );
   };
 
@@ -121,7 +121,7 @@ export function TokenScreener() {
   }: { col: SortKey; label: string; className?: string }) => (
     <TableHead
       className={cn(
-        "cursor-pointer hover:text-neon-cyan transition-colors font-mono text-[10px] tracking-widest text-muted-foreground/80 select-none",
+        "cursor-pointer hover:text-neon-gold transition-colors font-mono text-[10px] tracking-widest text-muted-foreground/80 select-none",
         className,
       )}
       onClick={() => handleSort(col)}
@@ -143,7 +143,7 @@ export function TokenScreener() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="font-display text-xl font-bold text-foreground diamond-accent">
+        <h1 className="font-display text-2xl font-bold text-neon-gold diamond-accent">
           TOKEN SCREENER
         </h1>
         <p className="text-xs font-mono text-muted-foreground mt-0.5">
@@ -180,13 +180,13 @@ export function TokenScreener() {
           onClick={() => setFilterOpen(!filterOpen)}
           className={cn(
             "gap-2 h-9 font-mono text-xs border-border",
-            filterOpen && "border-neon-cyan/40 text-neon-cyan",
+            filterOpen && "border-neon-gold/40 text-neon-gold",
           )}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           FILTERS
           {(bondedOnly || hasTwitter) && (
-            <Badge className="h-4 w-4 p-0 text-[10px] bg-neon-cyan text-background flex items-center justify-center">
+            <Badge className="h-4 w-4 p-0 text-[10px] bg-neon-gold text-background flex items-center justify-center">
               {[bondedOnly, hasTwitter].filter(Boolean).length}
             </Badge>
           )}
@@ -324,7 +324,7 @@ export function TokenScreener() {
                     return (
                       <TableRow
                         key={token.id}
-                        className="border-b border-border/30 cursor-pointer hover:bg-neon-cyan/[0.055] transition-all duration-100 group/row border-l-2 border-l-transparent hover:border-l-neon-cyan/50"
+                        className="border-b border-border/30 cursor-pointer hover:bg-neon-gold/[0.055] transition-all duration-100 group/row border-l-2 border-l-transparent hover:border-l-neon-gold/50"
                         data-ocid={`screener.tokens.table.item.${i + 1}`}
                         onClick={() =>
                           navigate({
@@ -348,7 +348,7 @@ export function TokenScreener() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <div className="text-[13px] font-semibold text-foreground group-hover/row:text-neon-cyan transition-colors leading-tight">
+                              <div className="text-[13px] font-semibold text-foreground group-hover/row:text-neon-gold transition-colors leading-tight">
                                 {token.name}
                               </div>
                               <div className="text-[10px] font-mono text-muted-foreground/60 tracking-wide">
@@ -414,7 +414,7 @@ export function TokenScreener() {
                             to="/token/$id"
                             params={{ id: token.id }}
                             onClick={(e) => e.stopPropagation()}
-                            className="text-[10px] font-mono text-neon-cyan/60 hover:text-neon-cyan transition-colors tracking-widest"
+                            className="text-[10px] font-mono text-neon-gold/60 hover:text-neon-gold transition-colors tracking-widest"
                           >
                             VIEW →
                           </Link>

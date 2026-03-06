@@ -16,8 +16,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Mona Sans"', "sans-serif"],
-        display: ['"Bricolage Grotesque"', "sans-serif"],
+        sans: ['"Sora"', "sans-serif"],
+        display: ['"Fraunces"', "serif"],
         mono: ['"JetBrains Mono"', "monospace"],
       },
       colors: {

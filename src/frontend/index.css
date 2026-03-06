@@ -2,20 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* VALHALLA SCAN - Norse Crypto Terminal Design System */
+/* VALHALLA SCAN - Norse Warrior Dark Fantasy Crypto Terminal Design System */
 
 @font-face {
-  font-family: "Mona Sans";
-  src: url("/assets/fonts/MonaSans-VariableFont_wdth,wght.woff2") format("woff2");
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces-VariableFont_opsz,wght.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("/assets/fonts/BricolageGrotesque-VariableFont_opsz,wdth,wght.woff2") format("woff2");
-  font-weight: 200 800;
+  font-family: "Sora";
+  src: url("/assets/fonts/Sora-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 800;
   font-style: normal;
   font-display: swap;
 }
@@ -31,53 +31,53 @@
 @layer base {
   :root {
     --radius: 0.25rem;
-    /* Dark Norse crypto terminal - pure dark mode only */
-    --background: 0.095 0.01 265;
-    --foreground: 0.92 0.015 250;
-    --card: 0.115 0.015 265;
-    --card-foreground: 0.92 0.015 250;
-    --popover: 0.13 0.018 265;
-    --popover-foreground: 0.92 0.015 250;
-    --primary: 0.72 0.18 200;
-    --primary-foreground: 0.08 0.01 265;
-    --secondary: 0.14 0.02 265;
-    --secondary-foreground: 0.85 0.02 250;
-    --muted: 0.16 0.015 265;
-    --muted-foreground: 0.58 0.02 255;
-    --accent: 0.68 0.22 195;
-    --accent-foreground: 0.07 0.01 265;
-    --destructive: 0.65 0.22 25;
+    /* Dark Norse Warrior Terminal — warm obsidian, fire gold, blood red */
+    --background: 0.085 0.015 30;
+    --foreground: 0.93 0.02 60;
+    --card: 0.11 0.018 30;
+    --card-foreground: 0.93 0.02 60;
+    --popover: 0.135 0.022 30;
+    --popover-foreground: 0.93 0.02 60;
+    --primary: 0.72 0.18 55;
+    --primary-foreground: 0.06 0.01 30;
+    --secondary: 0.155 0.02 32;
+    --secondary-foreground: 0.88 0.02 55;
+    --muted: 0.17 0.018 32;
+    --muted-foreground: 0.55 0.025 50;
+    --accent: 0.72 0.18 55;
+    --accent-foreground: 0.06 0.01 30;
+    --destructive: 0.62 0.22 22;
     --destructive-foreground: 0.95 0.01 25;
-    --border: 0.22 0.02 265;
-    --input: 0.18 0.02 265;
-    --ring: 0.68 0.2 200;
+    --border: 0.22 0.025 35;
+    --input: 0.175 0.022 35;
+    --ring: 0.68 0.20 55;
 
-    /* Neon accents for crypto terminal */
-    --neon-cyan: 0.75 0.2 195;
-    --neon-gold: 0.78 0.16 85;
-    --neon-red: 0.65 0.22 25;
-    --neon-green: 0.72 0.18 145;
-    --neon-purple: 0.65 0.22 295;
+    /* Neon accents — gold-first Norse palette */
+    --neon-gold: 0.76 0.20 52;
+    --neon-red: 0.62 0.22 22;
+    --neon-green: 0.70 0.19 155;
+    --neon-cyan: 0.72 0.18 200;
+    --neon-purple: 0.63 0.20 295;
 
-    /* Chart colors */
-    --chart-1: 0.72 0.18 200;
-    --chart-2: 0.72 0.18 145;
-    --chart-3: 0.78 0.16 85;
-    --chart-4: 0.65 0.22 25;
-    --chart-5: 0.65 0.22 295;
+    /* Chart colors — fire gold, jade, blood red, amber, warm purple */
+    --chart-1: 0.72 0.18 55;
+    --chart-2: 0.70 0.19 155;
+    --chart-3: 0.62 0.22 22;
+    --chart-4: 0.76 0.16 75;
+    --chart-5: 0.63 0.20 295;
 
     /* Sidebar */
-    --sidebar: 0.08 0.012 265;
-    --sidebar-foreground: 0.85 0.015 250;
-    --sidebar-primary: 0.72 0.18 200;
-    --sidebar-primary-foreground: 0.08 0.01 265;
-    --sidebar-accent: 0.14 0.018 265;
-    --sidebar-accent-foreground: 0.85 0.015 250;
-    --sidebar-border: 0.18 0.02 265;
-    --sidebar-ring: 0.68 0.2 200;
+    --sidebar: 0.07 0.014 28;
+    --sidebar-foreground: 0.88 0.018 55;
+    --sidebar-primary: 0.72 0.18 55;
+    --sidebar-primary-foreground: 0.06 0.01 30;
+    --sidebar-accent: 0.155 0.02 32;
+    --sidebar-accent-foreground: 0.88 0.018 55;
+    --sidebar-border: 0.22 0.025 35;
+    --sidebar-ring: 0.68 0.20 55;
   }
 
-  /* Always dark - no light mode override needed */
+  /* Always dark - pure Norse night */
   html {
     color-scheme: dark;
   }
@@ -88,7 +88,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Mona Sans", sans-serif;
+    font-family: "Sora", sans-serif;
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
   }
@@ -101,16 +101,31 @@
   }
 
   .font-display {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "Fraunces", serif;
   }
 
-  /* Neon glow effects */
-  .glow-cyan {
-    box-shadow: 0 0 8px oklch(var(--neon-cyan) / 0.4), 0 0 20px oklch(var(--neon-cyan) / 0.15);
+  /* Rune text — epic Fraunces italic for dramatic labels */
+  .rune-text {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    letter-spacing: 0.05em;
   }
 
+  /* Epic gold gradient for VALHALLA SCAN brand */
+  .gold-gradient-text {
+    background: linear-gradient(135deg, oklch(0.85 0.18 65), oklch(0.72 0.20 52), oklch(0.60 0.15 45));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Neon glow effects — gold-first */
   .glow-gold {
-    box-shadow: 0 0 8px oklch(var(--neon-gold) / 0.4), 0 0 20px oklch(var(--neon-gold) / 0.15);
+    box-shadow: 0 0 10px oklch(var(--neon-gold) / 0.5), 0 0 30px oklch(var(--neon-gold) / 0.2), 0 0 60px oklch(var(--neon-gold) / 0.08);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 8px oklch(var(--neon-cyan) / 0.3), 0 0 20px oklch(var(--neon-cyan) / 0.1);
   }
 
   .glow-green {
@@ -169,17 +184,17 @@
     z-index: 1;
   }
 
-  /* Grid mesh background */
+  /* Grid mesh background — warmer tone */
   .grid-mesh {
     background-image:
-      linear-gradient(oklch(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(var(--border) / 0.3) 1px, transparent 1px);
+      linear-gradient(oklch(var(--border) / 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--border) / 0.25) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
-  /* Data row hover */
+  /* Data row hover — gold accent */
   .data-row:hover {
-    background-color: oklch(var(--neon-cyan) / 0.05);
+    background-color: oklch(var(--neon-gold) / 0.05);
     cursor: pointer;
   }
 
@@ -213,27 +228,34 @@
     animation: count-up 0.4s ease-out forwards;
   }
 
-  /* Rune border - Norse-inspired decorative border — stronger glow */
+  /* Forge glow — molten gold shimmer on hero elements */
+  @keyframes forge-pulse {
+    0%, 100% { box-shadow: 0 0 12px oklch(var(--neon-gold) / 0.4), 0 0 30px oklch(var(--neon-gold) / 0.15); }
+    50% { box-shadow: 0 0 20px oklch(var(--neon-gold) / 0.6), 0 0 50px oklch(var(--neon-gold) / 0.25), 0 0 80px oklch(var(--neon-gold) / 0.1); }
+  }
+  .forge-glow { animation: forge-pulse 3s ease-in-out infinite; }
+
+  /* Rune border - Norse-inspired decorative border — gold glow */
   .rune-border {
-    border: 1px solid oklch(var(--neon-cyan) / 0.4);
+    border: 1px solid oklch(var(--neon-gold) / 0.45);
     box-shadow:
-      inset 0 0 24px oklch(var(--neon-cyan) / 0.06),
-      0 0 12px oklch(var(--neon-cyan) / 0.18),
-      0 0 1px oklch(var(--neon-cyan) / 0.5);
+      inset 0 0 24px oklch(var(--neon-gold) / 0.05),
+      0 0 12px oklch(var(--neon-gold) / 0.15),
+      0 0 1px oklch(var(--neon-gold) / 0.4);
   }
 
-  /* Viking/Norse diamond accent */
+  /* Viking/Norse diamond accent — gold */
   .diamond-accent::before {
     content: "◆";
-    color: oklch(var(--neon-cyan));
+    color: oklch(var(--neon-gold));
     margin-right: 0.5rem;
     font-size: 0.6em;
     vertical-align: middle;
   }
 
-  /* Active nav item glow */
+  /* Active nav item glow — gold */
   .nav-active-glow {
-    box-shadow: 0 0 10px oklch(var(--neon-cyan) / 0.2), inset 0 0 10px oklch(var(--neon-cyan) / 0.05);
+    box-shadow: 0 0 10px oklch(var(--neon-gold) / 0.2), inset 0 0 10px oklch(var(--neon-gold) / 0.05);
   }
 
   /* Buy/Sell badge glow */
@@ -251,30 +273,30 @@
     border: 1px solid oklch(var(--neon-red) / 0.3);
   }
 
-  /* Stat value glow — make the big numbers pop */
+  /* Stat value glow — gold text-shadow for big numbers */
   .stat-value-glow {
-    text-shadow: 0 0 12px oklch(var(--neon-cyan) / 0.4), 0 0 24px oklch(var(--neon-cyan) / 0.15);
+    text-shadow: 0 0 12px oklch(var(--neon-gold) / 0.5), 0 0 24px oklch(var(--neon-gold) / 0.2);
   }
 
-  /* Table row — stronger hover and divider */
+  /* Table row — gold hover and divider */
   .table-row-hover:hover {
-    background-color: oklch(var(--neon-cyan) / 0.07);
-    border-left: 2px solid oklch(var(--neon-cyan) / 0.5);
+    background-color: oklch(var(--neon-gold) / 0.07);
+    border-left: 2px solid oklch(var(--neon-gold) / 0.5);
   }
 
-  /* Section header — elevated label bar */
+  /* Section header — warm elevated label bar */
   .section-header {
     background: linear-gradient(
       90deg,
-      oklch(var(--muted) / 0.6) 0%,
+      oklch(var(--muted) / 0.5) 0%,
       oklch(var(--card)) 100%
     );
     border-bottom: 1px solid oklch(var(--border));
   }
 
-  /* Neon separator line */
+  /* Neon separator line — gold */
   .neon-sep {
     height: 1px;
-    background: linear-gradient(90deg, oklch(var(--neon-cyan) / 0.4), transparent);
+    background: linear-gradient(90deg, oklch(var(--neon-gold) / 0.4), transparent);
   }
 }

@@ -68,7 +68,7 @@ export function TradeFeedItem({
       <Link
         to="/token/$id"
         params={{ id: trade.token_id }}
-        className="w-16 min-w-0 text-[12px] font-semibold text-foreground hover:text-neon-cyan transition-colors truncate leading-none"
+        className="w-16 min-w-0 text-[12px] font-semibold font-mono text-neon-gold hover:text-neon-gold/80 transition-colors truncate leading-none"
       >
         {trade.token_ticker ||
           trade.token_name ||

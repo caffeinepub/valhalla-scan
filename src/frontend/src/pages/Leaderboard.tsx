@@ -127,7 +127,7 @@ function LeaderboardRow({ token, rank, valueKey, index }: LeaderboardRowProps) {
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <div className="text-sm font-medium text-foreground group-hover:text-neon-cyan transition-colors truncate">
+          <div className="text-sm font-medium text-foreground group-hover:text-neon-gold transition-colors truncate">
             {token.name}
           </div>
           <div className="text-[10px] font-mono text-muted-foreground">
@@ -237,7 +237,7 @@ export function Leaderboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="font-display text-xl font-bold text-foreground diamond-accent">
+        <h1 className="font-display text-2xl font-bold text-neon-gold diamond-accent">
           LEADERBOARD
         </h1>
         <p className="text-xs font-mono text-muted-foreground mt-0.5">
@@ -266,7 +266,7 @@ export function Leaderboard() {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="flex-1 min-w-[100px] rounded-none border-b-2 border-transparent data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan font-mono text-xs py-3 text-muted-foreground whitespace-nowrap"
+                  className="flex-1 min-w-[100px] rounded-none border-b-2 border-transparent data-[state=active]:border-neon-gold data-[state=active]:text-neon-gold font-mono text-xs py-3 text-muted-foreground whitespace-nowrap"
                 >
                   <Icon className="h-3.5 w-3.5 mr-1.5" />
                   {tab.label}
@@ -361,7 +361,7 @@ export function Leaderboard() {
             href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-neon-cyan hover:underline"
+            className="text-neon-gold hover:underline"
           >
             caffeine.ai
           </a>

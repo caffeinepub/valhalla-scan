@@ -96,7 +96,7 @@ export function UserLookup() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="font-display text-xl font-bold text-foreground diamond-accent">
+        <h1 className="font-display text-2xl font-bold text-neon-gold diamond-accent">
           USER LOOKUP
         </h1>
         <p className="text-xs font-mono text-muted-foreground mt-0.5">
@@ -148,7 +148,7 @@ export function UserLookup() {
                 setSearchInput(p);
                 handleSearch(p);
               }}
-              className="text-[10px] font-mono text-neon-cyan/70 hover:text-neon-cyan transition-colors truncate max-w-[200px]"
+              className="text-[10px] font-mono text-neon-gold/70 hover:text-neon-gold transition-colors truncate max-w-[200px]"
             >
               {truncatePrincipal(p, 8)}
             </button>
@@ -229,7 +229,7 @@ export function UserLookup() {
                 <div className="text-[10px] font-mono text-muted-foreground">
                   TOTAL TRADES
                 </div>
-                <div className="font-display font-bold text-xl text-foreground mt-0.5">
+                <div className="font-display font-bold text-xl text-neon-gold mt-0.5 stat-value-glow">
                   {formatNumber(stats.trade_count)}
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function UserLookup() {
           {balances.length > 0 && (
             <div className="bg-card border border-border rounded-sm overflow-hidden">
               <div className="flex items-center gap-2 p-3 border-b border-border">
-                <Wallet className="h-4 w-4 text-neon-cyan" />
+                <Wallet className="h-4 w-4 text-neon-gold" />
                 <h3 className="font-display font-semibold text-sm text-foreground">
                   HOLDINGS
                 </h3>
@@ -307,7 +307,7 @@ export function UserLookup() {
                         <Link
                           to="/token/$id"
                           params={{ id: b.token_id }}
-                          className="flex items-center gap-2 hover:text-neon-cyan transition-colors"
+                          className="flex items-center gap-2 hover:text-neon-gold transition-colors"
                         >
                           <Avatar className="h-6 w-6 rounded-sm">
                             <AvatarImage src={getTokenImageUrl(b.token_id)} />

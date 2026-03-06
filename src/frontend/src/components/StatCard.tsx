@@ -35,7 +35,7 @@ export function StatCard({
       <div className="absolute inset-0 grid-mesh opacity-30 pointer-events-none" />
 
       {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-neon-cyan/20 rounded-bl-full" />
+      <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-neon-gold/20 rounded-bl-full" />
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
@@ -43,7 +43,7 @@ export function StatCard({
             {label}
           </span>
           {icon && (
-            <div className="text-neon-cyan opacity-70 glow-cyan p-1.5 rounded-sm bg-primary/5">
+            <div className="text-neon-gold opacity-80 glow-gold p-1.5 rounded-sm bg-primary/5">
               {icon}
             </div>
           )}
@@ -56,7 +56,7 @@ export function StatCard({
                 ? "text-neon-green"
                 : trend === "down"
                   ? "text-neon-red"
-                  : "text-neon-cyan",
+                  : "text-neon-gold",
             )}
           >
             {value}
