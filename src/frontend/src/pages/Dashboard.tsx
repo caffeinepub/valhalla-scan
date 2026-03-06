@@ -107,25 +107,40 @@ export function Dashboard() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex flex-col items-center justify-center py-6 rounded-sm overflow-hidden relative"
+        className="flex flex-col items-center justify-center py-8 rounded-sm overflow-hidden relative"
         style={{
-          background: "#000000",
-          border: "1px solid oklch(0.45 0.18 220 / 0.5)",
+          background: "#050505",
+          border: "1px solid oklch(0.55 0.18 45 / 0.6)",
+          boxShadow:
+            "0 0 40px oklch(0.55 0.22 45 / 0.25), 0 0 80px oklch(0.40 0.18 35 / 0.12), inset 0 0 60px oklch(0.20 0.12 30 / 0.15)",
         }}
       >
+        {/* Ambient fire glow overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, oklch(0.35 0.20 220 / 0.25) 0%, transparent 65%)",
+              "radial-gradient(ellipse at center, oklch(0.40 0.22 45 / 0.30) 0%, oklch(0.20 0.15 35 / 0.15) 40%, transparent 70%)",
+          }}
+        />
+        {/* Bottom ember glow */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, oklch(0.35 0.20 35 / 0.20) 0%, transparent 100%)",
           }}
         />
         <img
-          src="/assets/uploads/file_000000002de07208860b090ea8cab3d7-1.png"
+          src="/assets/uploads/1982-1.jpeg"
           alt="VALHALLA SCAN"
-          className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-2xl"
+          className="w-64 h-64 md:w-80 md:h-80 object-contain relative z-10"
+          style={{
+            filter:
+              "drop-shadow(0 0 24px oklch(0.65 0.25 45 / 0.7)) drop-shadow(0 0 48px oklch(0.50 0.22 35 / 0.40))",
+          }}
         />
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-3 flex items-center gap-2 relative z-10">
           <span className="relative flex h-2.5 w-2.5">
             <span className="pulse-dot absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-green" />
