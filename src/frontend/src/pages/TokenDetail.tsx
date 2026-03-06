@@ -92,21 +92,29 @@ function PriceChart({ tokenId }: { tokenId: string }) {
   const [resolution, setResolution] = useState<Resolution>("60");
   const [data, setData] = useState<TVFeedBar[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchChart = useCallback(async () => {
-    setLoading(true);
-    try {
-      const bars = await getTokenTvFeed(tokenId, resolution);
-      setData(bars || []);
-    } catch {
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [tokenId, resolution]);
+  const fetchChart = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
+      try {
+        const bars = await getTokenTvFeed(tokenId, resolution);
+        setData(bars || []);
+        setLastUpdated(new Date());
+      } catch {
+        setData([]);
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [tokenId, resolution],
+  );
 
   useEffect(() => {
-    fetchChart();
+    fetchChart(false);
+    // Live refresh every 30 seconds
+    const interval = setInterval(() => fetchChart(true), 30_000);
+    return () => clearInterval(interval);
   }, [fetchChart]);
 
   // Keep price values in sats (raw) for chart display
@@ -144,6 +152,24 @@ function PriceChart({ tokenId }: { tokenId: string }) {
           <span className="font-display font-semibold text-sm text-neon-gold/80">
             PRICE CHART
           </span>
+          <div className="flex items-center gap-1 ml-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-green" />
+            </span>
+            <span className="font-mono text-[10px] text-neon-green/80">
+              LIVE
+            </span>
+          </div>
+          {lastUpdated && (
+            <span className="font-mono text-[10px] text-muted-foreground/50 hidden sm:inline">
+              {lastUpdated.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </span>
+          )}
         </div>
         <Select
           value={resolution}
@@ -212,11 +238,23 @@ function PriceChart({ tokenId }: { tokenId: string }) {
                 }}
                 tickLine={false}
                 axisLine={false}
-                width={70}
+                width={78}
                 tickFormatter={(v: number) => {
                   if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
                   if (v >= 1_000) return `${(v / 1_000).toFixed(1)}K`;
+                  if (v < 1) return `${v.toFixed(4)}`;
                   return `${v}`;
+                }}
+                label={{
+                  value: "sats",
+                  angle: -90,
+                  position: "insideLeft",
+                  offset: 10,
+                  style: {
+                    fontSize: 9,
+                    fill: "oklch(0.45 0.025 50)",
+                    fontFamily: "JetBrains Mono",
+                  },
                 }}
               />
               <Tooltip
@@ -229,7 +267,17 @@ function PriceChart({ tokenId }: { tokenId: string }) {
                 }}
                 labelStyle={{ color: "oklch(0.92 0.015 250)" }}
                 itemStyle={{ color: strokeColor }}
-                formatter={(value: number) => [formatPrice(value), "Price"]}
+                formatter={(value: number) => {
+                  let display: string;
+                  if (value >= 1_000_000)
+                    display = `${(value / 1_000_000).toFixed(4)}M sats`;
+                  else if (value >= 1_000)
+                    display = `${(value / 1_000).toFixed(4)}K sats`;
+                  else if (value < 1) display = `${value.toFixed(6)} sats`;
+                  else
+                    display = `${value.toLocaleString("en-US", { maximumFractionDigits: 4 })} sats`;
+                  return [display, "Price"];
+                }}
               />
               <Area
                 type="monotone"
