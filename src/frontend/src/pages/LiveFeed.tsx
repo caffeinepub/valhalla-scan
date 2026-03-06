@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { useBtcPrice } from "@/hooks/use-btc-price";
+import { useTokenTickers } from "@/hooks/use-token-tickers";
 import { useUserNames } from "@/hooks/use-user-names";
 import { type Trade, getRecentTrades, getTokenImageUrl } from "@/lib/api";
 import {
@@ -75,6 +76,17 @@ export function LiveFeed() {
     [trades],
   );
   const userNames = useUserNames(tradeUserIds);
+
+  // Fetch tickers for trades that don't have token_ticker in the API response
+  const missingTickerIds = useMemo(
+    () =>
+      trades
+        .filter((t) => !t.token_ticker)
+        .map((t) => t.token_id)
+        .filter(Boolean),
+    [trades],
+  );
+  const tokenTickers = useTokenTickers(missingTickerIds);
 
   const totalBuyVol = trades
     .filter((t) => t.type === "buy")
@@ -325,8 +337,9 @@ export function LiveFeed() {
                       className="w-20 text-xs font-mono font-semibold text-neon-gold hover:text-neon-gold/80 transition-colors truncate"
                     >
                       {trade.token_ticker ||
+                        tokenTickers.get(trade.token_id) ||
                         trade.token_name ||
-                        (trade.token_id ?? "").slice(0, 8)}
+                        (trade.token_id ?? "").slice(0, 6).toUpperCase()}
                     </Link>
 
                     {/* Buy/Sell badge */}
@@ -376,7 +389,9 @@ export function LiveFeed() {
                         {formatNumber(trade.token_amount)}
                       </div>
                       <div className="text-[9px] font-mono text-muted-foreground/40 tracking-wider">
-                        {trade.token_ticker || "TKN"}
+                        {trade.token_ticker ||
+                          tokenTickers.get(trade.token_id) ||
+                          "..."}
                       </div>
                     </div>
 

@@ -6,6 +6,7 @@ import { useBtcPrice } from "@/hooks/use-btc-price";
 import { useUserNames } from "@/hooks/use-user-names";
 import { type Token, type Trade, getRecentTrades, getTokens } from "@/lib/api";
 
+import { useTokenTickers } from "@/hooks/use-token-tickers";
 import { Activity, Clock, TrendingDown, TrendingUp } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -78,6 +79,17 @@ export function Dashboard() {
     [liveTrades],
   );
   const liveTradeUserNames = useUserNames(liveTradeUserIds);
+
+  // Fetch tickers for trades missing token_ticker
+  const missingTickerIds = useMemo(
+    () =>
+      liveTrades
+        .filter((t) => !t.token_ticker)
+        .map((t) => t.token_id)
+        .filter(Boolean),
+    [liveTrades],
+  );
+  const liveTokenTickers = useTokenTickers(missingTickerIds);
 
   return (
     <div className="p-4 md:p-6 space-y-6">
@@ -400,6 +412,7 @@ export function Dashboard() {
                       index={i + 1}
                       userName={liveTradeUserNames.get(trade.user)}
                       btcPrice={btcPrice}
+                      resolvedTicker={liveTokenTickers.get(trade.token_id)}
                     />
                   ))}
               {!tradesLoading && liveTrades.length === 0 && (

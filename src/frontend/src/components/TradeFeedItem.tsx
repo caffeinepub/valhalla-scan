@@ -17,6 +17,7 @@ interface TradeFeedItemProps {
   index: number;
   userName?: string;
   btcPrice?: number | null;
+  resolvedTicker?: string;
 }
 
 export function TradeFeedItem({
@@ -24,6 +25,7 @@ export function TradeFeedItem({
   index,
   userName,
   btcPrice = null,
+  resolvedTicker,
 }: TradeFeedItemProps) {
   const isBuy = trade.type === "buy";
   const { btc: btcStr, usd: usdStr } = formatBTCWithUSD(
@@ -71,8 +73,9 @@ export function TradeFeedItem({
         className="w-16 min-w-0 text-[12px] font-semibold font-mono text-neon-gold hover:text-neon-gold/80 transition-colors truncate leading-none"
       >
         {trade.token_ticker ||
+          resolvedTicker ||
           trade.token_name ||
-          (trade.token_id ?? "").slice(0, 8)}
+          (trade.token_id ?? "").slice(0, 6).toUpperCase()}
       </Link>
 
       {/* Buy/Sell badge */}
@@ -118,7 +121,7 @@ export function TradeFeedItem({
           {formatNumber(trade.token_amount)}
         </div>
         <div className="text-[8px] font-mono text-muted-foreground/40 tracking-wider">
-          {trade.token_ticker || "TKN"}
+          {trade.token_ticker || resolvedTicker || "..."}
         </div>
       </div>
 
